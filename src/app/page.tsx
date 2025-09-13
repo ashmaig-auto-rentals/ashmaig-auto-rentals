@@ -1,3 +1,4 @@
+// src/app/page.tsx
 import Image from "next/image";
 import Link from "next/link";
 import BookingBar from "@/components/BookingBar";
@@ -59,7 +60,7 @@ export default function HomePage() {
         <div className="max-w-2xl mx-auto mt-6 text-center text-sm text-gray-700 bg-white shadow-sm p-4 rounded-lg">
           <p>
             Don’t have full coverage? If you only carry liability, you can{" "}
-            <span className="font-semibold">upgrade to full coverage directly through us</span>.  
+            <span className="font-semibold">upgrade to full coverage directly through us</span>.{" "}
             If not, we can still rent to you securely via Turo.
           </p>
         </div>
@@ -168,7 +169,7 @@ export default function HomePage() {
         <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
           <div className="p-6 bg-white rounded-lg shadow-md">
             <p className="text-blue-600 text-3xl mb-3">📅</p>
-            <h3 className="font-medium">1. Pick Your Dates &amp; Car</h3>
+            <h3 className="font-medium">1. Pick Your Dates & Car</h3>
             <p className="text-gray-600 text-sm mt-2">
               Select your rental period and vehicle that best fits your trip.
             </p>
@@ -189,7 +190,7 @@ export default function HomePage() {
           </div>
           <div className="p-6 bg-white rounded-lg shadow-md">
             <p className="text-yellow-500 text-3xl mb-3">🚗</p>
-            <h3 className="font-medium">4. Confirm &amp; Drive Away</h3>
+            <h3 className="font-medium">4. Confirm & Drive Away</h3>
             <p className="text-gray-600 text-sm mt-2">
               Complete your payment, and enjoy a stress-free pickup.
             </p>
