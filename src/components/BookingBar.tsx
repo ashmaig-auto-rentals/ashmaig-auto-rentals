@@ -102,7 +102,7 @@ export default function BookingBar() {
         name,
         email,
         phone,
-        vehicle: vehicle || vehicleClass, // ✅ match {{vehicle}} in template
+        vehicle: vehicle || vehicleClass, // ✅ match {{vehicle}}
         pickup_date: pickup,
         dropoff_date: dropoff,
         days: String(days),
@@ -129,7 +129,7 @@ export default function BookingBar() {
   }
 
   return (
-    <div className="w-full bg-white shadow-md border rounded-lg p-4 flex flex-col gap-4">
+    <div className="w-full bg-white dark:bg-slate-800 shadow-md border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-4 text-gray-900 dark:text-gray-100">
       {/* Step 1: Quote */}
       {step === "quote" && (
         <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-stretch">
@@ -139,7 +139,7 @@ export default function BookingBar() {
               type="date"
               value={pickup}
               onChange={(e) => setPickup(e.target.value)}
-              className="border rounded-md px-3 py-2 text-sm w-full h-10"
+              className="border rounded-md px-3 py-2 text-sm w-full h-10 bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
             />
           </div>
           <div className="flex flex-col flex-1 min-w-[180px]">
@@ -148,7 +148,7 @@ export default function BookingBar() {
               type="date"
               value={dropoff}
               onChange={(e) => setDropoff(e.target.value)}
-              className="border rounded-md px-3 py-2 text-sm w-full h-10"
+              className="border rounded-md px-3 py-2 text-sm w-full h-10 bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
             />
           </div>
           <div className="flex flex-col flex-1 min-w-[180px]">
@@ -159,7 +159,7 @@ export default function BookingBar() {
                 setVehicleClass(e.target.value);
                 setVehicle("");
               }}
-              className="border rounded-md px-3 py-2 text-sm w-full h-10"
+              className="border rounded-md px-3 py-2 text-sm w-full h-10 bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
             >
               <option value="">Choose Class</option>
               {Object.keys(vehicleOptions).map((cls) => (
@@ -175,7 +175,7 @@ export default function BookingBar() {
               value={vehicle}
               onChange={(e) => setVehicle(e.target.value)}
               disabled={!vehicleClass}
-              className="border rounded-md px-3 py-2 text-sm w-full h-10"
+              className="border rounded-md px-3 py-2 text-sm w-full h-10 bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
             >
               <option value="">Choose Vehicle</option>
               {vehicleClass &&
@@ -199,7 +199,7 @@ export default function BookingBar() {
       {/* Step 2: Booking Form */}
       {step === "book" && (
         <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-4">
-          <p className="text-xl font-bold text-green-700">
+          <p className="text-xl font-bold text-green-700 dark:text-green-400">
             ✅ Quote: ${quote} for {days} days
           </p>
           <input
@@ -208,7 +208,7 @@ export default function BookingBar() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="border rounded-md px-3 py-2 text-sm"
+            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
           <input
             type="email"
@@ -216,7 +216,7 @@ export default function BookingBar() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="border rounded-md px-3 py-2 text-sm"
+            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
           <input
             type="tel"
@@ -224,11 +224,11 @@ export default function BookingBar() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             required
-            className="border rounded-md px-3 py-2 text-sm"
+            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
 
           {/* Upload license */}
-          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
+          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
             <span className="text-3xl">🪪</span>
             <span className="text-sm font-medium">Upload Driver’s License</span>
             <input
@@ -252,7 +252,7 @@ export default function BookingBar() {
           </label>
 
           {/* Upload insurance */}
-          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
+          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
             <span className="text-3xl">🛡️</span>
             <span className="text-sm font-medium">Upload Proof of Insurance</span>
             <input
@@ -284,7 +284,7 @@ export default function BookingBar() {
           </button>
 
           {status && (
-            <p className={status.ok ? "text-green-600 text-sm" : "text-red-600 text-sm"}>
+            <p className={status.ok ? "text-green-600 dark:text-green-400 text-sm" : "text-red-600 dark:text-red-400 text-sm"}>
               {status.msg}
             </p>
           )}
@@ -293,7 +293,7 @@ export default function BookingBar() {
 
       {/* Step 3: Confirmation */}
       {step === "verify" && (
-        <div className="text-center text-green-700 font-medium">
+        <div className="text-center text-green-700 dark:text-green-400 font-medium">
           🎉 Thank you! We’ve received your request and will reach out shortly with pickup details.
         </div>
       )}

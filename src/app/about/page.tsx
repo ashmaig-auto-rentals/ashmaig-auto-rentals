@@ -1,4 +1,3 @@
-// src/app/about/page.tsx
 import Image from "next/image";
 import Link from "next/link";
 
@@ -25,8 +24,8 @@ export default function AboutPage() {
 
       {/* Our Story */}
       <section className="section max-w-4xl mx-auto text-center">
-        <h2 className="text-2xl font-semibold mb-4">Our Story</h2>
-        <p className="text-gray-700 leading-relaxed">
+        <h2 className="text-2xl font-semibold mb-4 dark:text-white">Our Story</h2>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
           Ashmaig Auto Rentals was founded with a simple mission: to make car
           rentals in Phoenix stress-free, transparent, and affordable. Tired of
           hidden fees, deposits, and long wait times, we set out to provide a
@@ -35,28 +34,30 @@ export default function AboutPage() {
       </section>
 
       {/* What Makes Us Different */}
-      <section className="section bg-gray-50">
+      <section className="section bg-gray-50 dark:bg-slate-900">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-2xl font-semibold mb-8">What Makes Us Unique</h2>
+          <h2 className="text-2xl font-semibold mb-8 dark:text-white">
+            What Makes Us Unique
+          </h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white rounded-lg shadow-md">
+            <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
               <p className="text-blue-600 text-3xl mb-3">💸</p>
-              <h3 className="font-medium">No Hidden Fees</h3>
-              <p className="text-gray-600 text-sm mt-2">
+              <h3 className="font-medium dark:text-white">No Hidden Fees</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
                 Transparent, all-in pricing. What you see is what you pay.
               </p>
             </div>
-            <div className="p-6 bg-white rounded-lg shadow-md">
+            <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
               <p className="text-green-600 text-3xl mb-3">🚗</p>
-              <h3 className="font-medium">Clean, Reliable Cars</h3>
-              <p className="text-gray-600 text-sm mt-2">
+              <h3 className="font-medium dark:text-white">Clean, Reliable Cars</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
                 Well-maintained vehicles ready for your journey.
               </p>
             </div>
-            <div className="p-6 bg-white rounded-lg shadow-md">
+            <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
               <p className="text-yellow-500 text-3xl mb-3">🤝</p>
-              <h3 className="font-medium">Great Customer Service</h3>
-              <p className="text-gray-600 text-sm mt-2">
+              <h3 className="font-medium dark:text-white">Great Customer Service</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
                 We pride ourselves on quick responses and personal care.
               </p>
             </div>
@@ -66,8 +67,10 @@ export default function AboutPage() {
 
       {/* Mission Statement */}
       <section className="section max-w-4xl mx-auto text-center">
-        <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
-        <p className="text-gray-700 leading-relaxed">
+        <h2 className="text-2xl font-semibold mb-4 dark:text-white">
+          Our Mission
+        </h2>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
           To provide Phoenix drivers with affordable, convenient rentals that
           feel effortless — whether you need a car for a day, a week, or longer.
           We believe renting a car should be simple, transparent, and stress-free.
@@ -82,7 +85,7 @@ export default function AboutPage() {
         </p>
         <Link
           href="/fleet"
-          className="mt-6 inline-block bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100"
+          className="mt-6 inline-block bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-gray-200"
         >
           🚗 View Fleet
         </Link>

@@ -21,13 +21,15 @@ export default function FleetPage() {
 
   return (
     <main className="section">
-      <h1 className="text-3xl font-bold text-center mb-10">Our Entire Fleet</h1>
+      <h1 className="text-3xl font-bold text-center mb-10 dark:text-white">
+        Our Entire Fleet
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {vehicles.map((car, idx) => (
           <div
             key={idx}
-            className="rounded-lg border bg-white shadow-md hover:shadow-lg transition overflow-hidden"
+            className="rounded-lg border bg-white dark:bg-slate-800 dark:border-gray-700 shadow-md hover:shadow-lg transition overflow-hidden"
           >
             <div className="relative h-48">
               <Image
@@ -38,8 +40,10 @@ export default function FleetPage() {
               />
             </div>
             <div className="p-4 text-center">
-              <h3 className="font-medium">{car.name}</h3>
-              <p className="text-gray-600">${car.price}/day</p>
+              <h3 className="font-medium dark:text-white">{car.name}</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                ${car.price}/day
+              </p>
               <Link
                 href={`/vehicles/${car.slug}`}
                 className="mt-3 inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
