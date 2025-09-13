@@ -10,7 +10,9 @@ function getSupabase(): SupabaseClient {
   if (_supabase) return _supabase;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
   if (!url || !key) throw new Error("Supabase env vars missing");
+
   _supabase = createClient(url, key);
   return _supabase;
 }
@@ -99,29 +101,29 @@ export default function BookingBar() {
       setLicenseUrl(licenseLink || null);
       setInsuranceUrl(insuranceLink || null);
 
-      // ✅ send with correct keys matching EmailJS template
+      const payload = {
+        name,
+        email,
+        phone,
+        car: `${vehicleClass}${vehicle ? ` — ${vehicle}` : ""}`,
+        pickup_date: pickup,
+        dropoff_date: dropoff,
+        days: String(days),
+        quote: String(quote),
+        license_url: licenseLink,
+        insurance_url: insuranceLink,
+      };
+
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          name,
-          email,
-          phone,
-          car: `${vehicleClass}${vehicle ? ` — ${vehicle}` : ""}`,
-          pickup_date: pickup,
-          dropoff_date: dropoff,
-          days: String(days),
-          quote: String(quote),
-          license_url: licenseLink,
-          insurance_url: insuranceLink,
-        },
+        payload,
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
 
       setStatus({ ok: true, msg: "Booking submitted successfully!" });
       setStep("verify");
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
       setStatus({ ok: false, msg: "Error submitting booking." });
     } finally {
       setSubmitting(false);
