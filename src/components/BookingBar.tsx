@@ -10,9 +10,7 @@ function getSupabase(): SupabaseClient {
   if (_supabase) return _supabase;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
   if (!url || !key) throw new Error("Supabase env vars missing");
-
   _supabase = createClient(url, key);
   return _supabase;
 }
@@ -33,8 +31,6 @@ export default function BookingBar() {
   const [phone, setPhone] = useState("");
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [insuranceFile, setInsuranceFile] = useState<File | null>(null);
-  const [licenseUrl, setLicenseUrl] = useState<string | null>(null);
-  const [insuranceUrl, setInsuranceUrl] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(null);
@@ -66,7 +62,7 @@ export default function BookingBar() {
   }, [vehicleClass, days]);
 
   function canQuote() {
-    return Boolean(pickup && dropoff && vehicleClass && vehicle && days > 0);
+    return Boolean(pickup && dropoff && vehicleClass && days > 0);
   }
 
   function goToBook() {
@@ -94,18 +90,14 @@ export default function BookingBar() {
 
       let licenseLink = "";
       let insuranceLink = "";
-
       if (licenseFile) licenseLink = await uploadFile(licenseFile, "license");
       if (insuranceFile) insuranceLink = await uploadFile(insuranceFile, "insurance");
-
-      setLicenseUrl(licenseLink || null);
-      setInsuranceUrl(insuranceLink || null);
 
       const payload = {
         name,
         email,
         phone,
-        car: `${vehicleClass}${vehicle ? ` — ${vehicle}` : ""}`,
+        vehicle: vehicle || vehicleClass, // ✅ match {{vehicle}}
         pickup_date: pickup,
         dropoff_date: dropoff,
         days: String(days),
@@ -123,7 +115,8 @@ export default function BookingBar() {
 
       setStatus({ ok: true, msg: "Booking submitted successfully!" });
       setStep("verify");
-    } catch (err: any) {
+    } catch (err) {
+      console.error("❌ Booking failed:", err);
       setStatus({ ok: false, msg: "Error submitting booking." });
     } finally {
       setSubmitting(false);
@@ -135,6 +128,7 @@ export default function BookingBar() {
       {/* Step 1: Quote */}
       {step === "quote" && (
         <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-stretch">
+          {/* Pick-up */}
           <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Pick-up Date</label>
             <input
@@ -143,9 +137,8 @@ export default function BookingBar() {
               onChange={(e) => setPickup(e.target.value)}
               className="border rounded-md px-3 py-2 text-sm w-full h-10"
             />
-            {!pickup && <p className="text-xs text-gray-500">Choose Pick-up Date</p>}
           </div>
-
+          {/* Drop-off */}
           <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Drop-off Date</label>
             <input
@@ -154,9 +147,8 @@ export default function BookingBar() {
               onChange={(e) => setDropoff(e.target.value)}
               className="border rounded-md px-3 py-2 text-sm w-full h-10"
             />
-            {!dropoff && <p className="text-xs text-gray-500">Choose Drop-off Date</p>}
           </div>
-
+          {/* Vehicle Class */}
           <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Vehicle Class</label>
             <select
@@ -175,7 +167,7 @@ export default function BookingBar() {
               ))}
             </select>
           </div>
-
+          {/* Vehicle */}
           <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Vehicle</label>
             <select
@@ -193,7 +185,6 @@ export default function BookingBar() {
                 ))}
             </select>
           </div>
-
           <button
             onClick={goToBook}
             disabled={!canQuote()}
@@ -210,41 +201,31 @@ export default function BookingBar() {
           <p className="text-xl font-bold text-green-700">
             ✅ Quote: ${quote} for {days} days
           </p>
-
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">Full Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="border rounded-md px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="border rounded-md px-3 py-2 text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">Phone Number</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              className="border rounded-md px-3 py-2 text-sm"
-            />
-          </div>
-
-          {/* Upload License */}
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="border rounded-md px-3 py-2 text-sm"
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="border rounded-md px-3 py-2 text-sm"
+          />
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+            className="border rounded-md px-3 py-2 text-sm"
+          />
+          {/* Upload license */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
             <span className="text-3xl">🪪</span>
             <span className="text-sm font-medium">Upload Driver’s License</span>
@@ -255,20 +236,8 @@ export default function BookingBar() {
               required
               className="hidden"
             />
-            {licenseFile && <span className="mt-1 text-xs">{licenseFile.name}</span>}
-            {licenseUrl && (
-              <a
-                href={licenseUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline text-xs"
-              >
-                View License
-              </a>
-            )}
           </label>
-
-          {/* Upload Insurance */}
+          {/* Upload insurance */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
             <span className="text-3xl">🛡️</span>
             <span className="text-sm font-medium">Upload Proof of Insurance</span>
@@ -279,19 +248,7 @@ export default function BookingBar() {
               required
               className="hidden"
             />
-            {insuranceFile && <span className="mt-1 text-xs">{insuranceFile.name}</span>}
-            {insuranceUrl && (
-              <a
-                href={insuranceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline text-xs"
-              >
-                View Insurance
-              </a>
-            )}
           </label>
-
           <button
             type="submit"
             disabled={submitting}
@@ -299,7 +256,6 @@ export default function BookingBar() {
           >
             {submitting ? "Submitting..." : "Confirm Booking"}
           </button>
-
           {status && (
             <p className={status.ok ? "text-green-600 text-sm" : "text-red-600 text-sm"}>
               {status.msg}
