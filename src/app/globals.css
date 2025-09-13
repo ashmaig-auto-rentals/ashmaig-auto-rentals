@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
+/* Light theme defaults */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --bg: #f7f7f7;       /* light background */
+  --text: #1a1a1a;     /* dark text */
+  --muted: #555555;    /* gray secondary text */
+  --card: #ffffff;     /* white cards */
 }
 
 @theme inline {
@@ -12,15 +18,24 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark mode overrides */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #0b0b0b;
+    --text: #e7e7e7;
+    --muted: #a1a1a1;
+    --card: #141414;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 24px;
 }
