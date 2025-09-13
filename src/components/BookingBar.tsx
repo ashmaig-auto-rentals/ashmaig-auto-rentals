@@ -1,4 +1,3 @@
-// src/components/BookingBar.tsx
 "use client";
 
 import { useRef, useState, useMemo } from "react";
@@ -11,6 +10,24 @@ const supabase = createClient(
 );
 
 const BUCKET = "Insurance_Licenses";
+
+// ✅ Move constant outside component (no dependency warning)
+const vehicleOptions: Record<string, string[]> = {
+  Sedan: ["2020 Toyota Camry", "2017 Hyundai Sonata", "2014 Ford Fusion"],
+  SUV: ["2017 Toyota RAV4", "2017 Honda CR-V", "2019 Hyundai Santa Fe"],
+  "3-Row SUV": [
+    "2019 Chevy Suburban",
+    "2020 Toyota Sienna",
+    "2022 Chrysler Pacifica",
+  ],
+};
+
+// ✅ Move constant outside component (no dependency warning)
+const rates: Record<string, number> = {
+  Sedan: 50,
+  SUV: 60,
+  "3-Row SUV": 70,
+};
 
 export default function BookingBar() {
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -32,24 +49,6 @@ export default function BookingBar() {
   const [licenseName, setLicenseName] = useState<string>("");
   const [insuranceName, setInsuranceName] = useState<string>("");
 
-  // Vehicle options
-  const vehicleOptions: Record<string, string[]> = {
-    Sedan: ["2020 Toyota Camry", "2017 Hyundai Sonata", "2014 Ford Fusion"],
-    SUV: ["2017 Toyota RAV4", "2017 Honda CR-V", "2019 Hyundai Santa Fe"],
-    "3-Row SUV": [
-      "2019 Chevy Suburban",
-      "2020 Toyota Sienna",
-      "2022 Chrysler Pacifica",
-    ],
-  };
-
-  // Rates
-  const rates: Record<string, number> = {
-    Sedan: 50,
-    SUV: 60,
-    "3-Row SUV": 70,
-  };
-
   // Days & Quote
   const days = useMemo(() => {
     if (!pickup || !dropoff) return 0;
@@ -63,7 +62,7 @@ export default function BookingBar() {
   const quote = useMemo(() => {
     if (!vehicleClass || !days) return 0;
     return (rates[vehicleClass] ?? 0) * days;
-  }, [vehicleClass, days]);
+  }, [vehicleClass, days]); // ✅ no need for rates, since it never changes
 
   function canQuote() {
     return Boolean(pickup && dropoff && vehicleClass && vehicle && days > 0);
@@ -113,9 +112,15 @@ export default function BookingBar() {
 
       // EmailJS params
       const params = {
-        name: (formRef.current.querySelector('input[name="name"]') as HTMLInputElement)?.value || "",
-        email: (formRef.current.querySelector('input[name="email"]') as HTMLInputElement)?.value || "",
-        phone: (formRef.current.querySelector('input[name="phone"]') as HTMLInputElement)?.value || "",
+        name:
+          (formRef.current.querySelector('input[name="name"]') as HTMLInputElement)
+            ?.value || "",
+        email:
+          (formRef.current.querySelector('input[name="email"]') as HTMLInputElement)
+            ?.value || "",
+        phone:
+          (formRef.current.querySelector('input[name="phone"]') as HTMLInputElement)
+            ?.value || "",
         car: `${vehicleClass}${vehicle ? ` — ${vehicle}` : ""}`,
         pickup_date: pickup,
         dropoff_date: dropoff,
@@ -232,66 +237,117 @@ export default function BookingBar() {
           {/* Name, Email, Phone */}
           <div>
             <label className="block text-sm font-medium">Name</label>
-            <input name="name" type="text" className="mt-1 border rounded-md px-3 py-2 text-sm w-full" required />
+            <input
+              name="name"
+              type="text"
+              className="mt-1 border rounded-md px-3 py-2 text-sm w-full"
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium">Email</label>
-            <input name="email" type="email" className="mt-1 border rounded-md px-3 py-2 text-sm w-full" required />
+            <input
+              name="email"
+              type="email"
+              className="mt-1 border rounded-md px-3 py-2 text-sm w-full"
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium">Phone</label>
-            <input name="phone" type="tel" className="mt-1 border rounded-md px-3 py-2 text-sm w-full" required />
+            <input
+              name="phone"
+              type="tel"
+              className="mt-1 border rounded-md px-3 py-2 text-sm w-full"
+              required
+            />
           </div>
           {/* Uploads */}
           <div className="grid md:grid-cols-2 gap-4">
             <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
               <span className="text-3xl">🪪</span>
-              <span className="text-sm font-medium">Upload Driver’s License</span>
-              <span className="text-xs text-gray-500">PNG, JPG, or PDF (max ~10MB)</span>
+              <span className="text-sm font-medium">
+                Upload Driver’s License
+              </span>
+              <span className="text-xs text-gray-500">
+                PNG, JPG, or PDF (max ~10MB)
+              </span>
               <input
                 name="license"
                 type="file"
                 accept="image/*,.pdf"
                 className="hidden"
                 required
-                onChange={(e) => setLicenseName(e.target.files?.[0]?.name ?? "")}
+                onChange={(e) =>
+                  setLicenseName(e.target.files?.[0]?.name ?? "")
+                }
               />
-              {licenseName && <span className="mt-1 text-xs text-gray-600">Selected: {licenseName}</span>}
+              {licenseName && (
+                <span className="mt-1 text-xs text-gray-600">
+                  Selected: {licenseName}
+                </span>
+              )}
             </label>
             <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
               <span className="text-3xl">🛡️</span>
-              <span className="text-sm font-medium">Upload Proof of Insurance</span>
-              <span className="text-xs text-gray-500">PNG, JPG, or PDF (max ~10MB)</span>
+              <span className="text-sm font-medium">
+                Upload Proof of Insurance
+              </span>
+              <span className="text-xs text-gray-500">
+                PNG, JPG, or PDF (max ~10MB)
+              </span>
               <input
                 name="insurance"
                 type="file"
                 accept="image/*,.pdf"
                 className="hidden"
                 required
-                onChange={(e) => setInsuranceName(e.target.files?.[0]?.name ?? "")}
+                onChange={(e) =>
+                  setInsuranceName(e.target.files?.[0]?.name ?? "")
+                }
               />
-              {insuranceName && <span className="mt-1 text-xs text-gray-600">Selected: {insuranceName}</span>}
+              {insuranceName && (
+                <span className="mt-1 text-xs text-gray-600">
+                  Selected: {insuranceName}
+                </span>
+              )}
             </label>
           </div>
           {/* Buttons */}
           <div className="flex gap-3">
-            <button type="button" onClick={() => setStep("quote")} className="px-4 py-2 rounded-lg border text-sm" disabled={submitting}>
+            <button
+              type="button"
+              onClick={() => setStep("quote")}
+              className="px-4 py-2 rounded-lg border text-sm"
+              disabled={submitting}
+            >
               Back
             </button>
-            <button type="submit" disabled={submitting} className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-medium">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-medium"
+            >
               {submitting ? "Sending..." : "Confirm Booking"}
             </button>
           </div>
-          {status && <p className={status.ok ? "text-green-700" : "text-red-700"}>{status.msg}</p>}
+          {status && (
+            <p className={status.ok ? "text-green-700" : "text-red-700"}>
+              {status.msg}
+            </p>
+          )}
         </form>
       )}
 
       {/* Step 3: Verify */}
       {step === "verify" && (
         <div className="text-center">
-          <h3 className="text-xl font-semibold text-green-700 mb-2">Thank you! 🎉</h3>
+          <h3 className="text-xl font-semibold text-green-700 mb-2">
+            Thank you! 🎉
+          </h3>
           <p className="text-gray-700 mb-4">
-            We’ve received your request. We’ll reach out shortly with payment and pickup instructions.
+            We’ve received your request. We’ll reach out shortly with payment
+            and pickup instructions.
           </p>
           <button
             onClick={() => setStep("quote")}

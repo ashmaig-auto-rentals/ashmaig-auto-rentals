@@ -2,7 +2,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import BookingBar from "@/components/BookingBar";
-import Footer from "@/components/Footer";
 
 export default function HomePage() {
   return (
