@@ -31,6 +31,8 @@ export default function BookingBar() {
   const [phone, setPhone] = useState("");
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [insuranceFile, setInsuranceFile] = useState<File | null>(null);
+  const [licenseUrl, setLicenseUrl] = useState<string | null>(null);
+  const [insuranceUrl, setInsuranceUrl] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(null);
@@ -62,7 +64,7 @@ export default function BookingBar() {
   }, [vehicleClass, days]);
 
   function canQuote() {
-    return Boolean(pickup && dropoff && vehicleClass && days > 0);
+    return Boolean(pickup && dropoff && vehicleClass && vehicle && days > 0);
   }
 
   function goToBook() {
@@ -93,11 +95,14 @@ export default function BookingBar() {
       if (licenseFile) licenseLink = await uploadFile(licenseFile, "license");
       if (insuranceFile) insuranceLink = await uploadFile(insuranceFile, "insurance");
 
+      setLicenseUrl(licenseLink || null);
+      setInsuranceUrl(insuranceLink || null);
+
       const payload = {
         name,
         email,
         phone,
-        vehicle: vehicle || vehicleClass, // ✅ match {{vehicle}}
+        vehicle: vehicle || vehicleClass, // ✅ match {{vehicle}} in template
         pickup_date: pickup,
         dropoff_date: dropoff,
         days: String(days),
@@ -128,7 +133,6 @@ export default function BookingBar() {
       {/* Step 1: Quote */}
       {step === "quote" && (
         <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-stretch">
-          {/* Pick-up */}
           <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Pick-up Date</label>
             <input
@@ -138,7 +142,6 @@ export default function BookingBar() {
               className="border rounded-md px-3 py-2 text-sm w-full h-10"
             />
           </div>
-          {/* Drop-off */}
           <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Drop-off Date</label>
             <input
@@ -148,7 +151,6 @@ export default function BookingBar() {
               className="border rounded-md px-3 py-2 text-sm w-full h-10"
             />
           </div>
-          {/* Vehicle Class */}
           <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Vehicle Class</label>
             <select
@@ -167,7 +169,6 @@ export default function BookingBar() {
               ))}
             </select>
           </div>
-          {/* Vehicle */}
           <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Vehicle</label>
             <select
@@ -225,6 +226,7 @@ export default function BookingBar() {
             required
             className="border rounded-md px-3 py-2 text-sm"
           />
+
           {/* Upload license */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
             <span className="text-3xl">🪪</span>
@@ -236,7 +238,19 @@ export default function BookingBar() {
               required
               className="hidden"
             />
+            {licenseFile && <span className="mt-1 text-xs">{licenseFile.name}</span>}
+            {licenseUrl && (
+              <a
+                href={licenseUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline text-xs"
+              >
+                View License
+              </a>
+            )}
           </label>
+
           {/* Upload insurance */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
             <span className="text-3xl">🛡️</span>
@@ -248,7 +262,19 @@ export default function BookingBar() {
               required
               className="hidden"
             />
+            {insuranceFile && <span className="mt-1 text-xs">{insuranceFile.name}</span>}
+            {insuranceUrl && (
+              <a
+                href={insuranceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline text-xs"
+              >
+                View Insurance
+              </a>
+            )}
           </label>
+
           <button
             type="submit"
             disabled={submitting}
@@ -256,6 +282,7 @@ export default function BookingBar() {
           >
             {submitting ? "Submitting..." : "Confirm Booking"}
           </button>
+
           {status && (
             <p className={status.ok ? "text-green-600 text-sm" : "text-red-600 text-sm"}>
               {status.msg}
