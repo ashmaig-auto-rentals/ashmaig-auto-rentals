@@ -1,4 +1,3 @@
-// src/app/page.tsx
 import Image from "next/image";
 import Link from "next/link";
 import BookingBar from "@/components/BookingBar";
@@ -23,11 +22,18 @@ export default function HomePage() {
           <p className="mt-4 text-lg text-gray-200 max-w-2xl">
             Pick your dates, choose a car, and drive.
           </p>
-          <div className="mt-10">
+
+          {/* Booking bar (desktop only) */}
+          <div className="mt-10 hidden md:block w-full max-w-xl bg-white/80 backdrop-blur-md rounded-lg shadow-lg p-4">
             <BookingBar />
           </div>
         </div>
       </section>
+
+      {/* Booking bar (mobile only, below hero image) */}
+      <div className="block md:hidden section -mt-8 z-20 relative w-full max-w-lg mx-auto bg-white shadow-md rounded-lg p-4">
+        <BookingBar />
+      </div>
 
       {/* Requirements Section */}
       <section className="section bg-gray-50">

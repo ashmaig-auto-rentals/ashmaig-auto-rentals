@@ -1,11 +1,10 @@
-// src/components/BookingBar.tsx
 "use client";
 
-import { useRef, useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import emailjs from "@emailjs/browser";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-// Lazy supabase init
+// Lazy Supabase init
 let _supabase: SupabaseClient | null = null;
 function getSupabase(): SupabaseClient {
   if (_supabase) return _supabase;
@@ -20,15 +19,21 @@ const BUCKET = "Insurance_Licenses";
 
 export default function BookingBar() {
   const formRef = useRef<HTMLFormElement | null>(null);
-  const [step, setStep] = useState<"quote" | "book" | "verify">("quote");
 
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
   const [vehicleClass, setVehicleClass] = useState("");
   const [vehicle, setVehicle] = useState("");
+  const [step, setStep] = useState<"quote" | "book" | "verify">("quote");
 
-  const [licenseName, setLicenseName] = useState("");
-  const [insuranceName, setInsuranceName] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [licenseFile, setLicenseFile] = useState<File | null>(null);
+  const [insuranceFile, setInsuranceFile] = useState<File | null>(null);
+  const [licenseUrl, setLicenseUrl] = useState<string | null>(null);
+  const [insuranceUrl, setInsuranceUrl] = useState<string | null>(null);
+
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(null);
 
@@ -70,40 +75,87 @@ export default function BookingBar() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // ... your emailjs + supabase upload code unchanged ...
+    setSubmitting(true);
+    setStatus(null);
+
+    try {
+      const supabase = getSupabase();
+
+      async function uploadFile(file: File, prefix: string) {
+        const ext = file.name.split(".").pop();
+        const path = `${prefix}_${Date.now()}.${ext}`;
+        const { error } = await supabase.storage.from(BUCKET).upload(path, file);
+        if (error) throw error;
+        const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+        return data.publicUrl;
+      }
+
+      let licenseLink = "";
+      let insuranceLink = "";
+
+      if (licenseFile) licenseLink = await uploadFile(licenseFile, "license");
+      if (insuranceFile) insuranceLink = await uploadFile(insuranceFile, "insurance");
+
+      setLicenseUrl(licenseLink || null);
+      setInsuranceUrl(insuranceLink || null);
+
+      // ✅ send with correct keys matching EmailJS template
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          name,
+          email,
+          phone,
+          car: `${vehicleClass}${vehicle ? ` — ${vehicle}` : ""}`,
+          pickup_date: pickup,
+          dropoff_date: dropoff,
+          days: String(days),
+          quote: String(quote),
+          license_url: licenseLink,
+          insurance_url: insuranceLink,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+
+      setStatus({ ok: true, msg: "Booking submitted successfully!" });
+      setStep("verify");
+    } catch (err) {
+      console.error(err);
+      setStatus({ ok: false, msg: "Error submitting booking." });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <div className="w-full bg-white shadow-md border rounded-lg p-6 flex flex-col gap-6">
+    <div className="w-full bg-white shadow-md border rounded-lg p-4 flex flex-col gap-4">
       {/* Step 1: Quote */}
       {step === "quote" && (
-        <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-end">
-          {/* Pick-up */}
-          <div className="flex flex-col flex-1 min-w-[150px]">
+        <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-stretch">
+          <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Pick-up Date</label>
             <input
               type="date"
               value={pickup}
               onChange={(e) => setPickup(e.target.value)}
-              placeholder="Choose Pick-up Date"
-              className="border rounded-md px-3 py-2 text-sm w-full"
+              className="border rounded-md px-3 py-2 text-sm w-full h-10"
             />
+            {!pickup && <p className="text-xs text-gray-500">Choose Pick-up Date</p>}
           </div>
 
-          {/* Drop-off */}
-          <div className="flex flex-col flex-1 min-w-[150px]">
+          <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Drop-off Date</label>
             <input
               type="date"
               value={dropoff}
               onChange={(e) => setDropoff(e.target.value)}
-              placeholder="Choose Drop-off Date"
-              className="border rounded-md px-3 py-2 text-sm w-full"
+              className="border rounded-md px-3 py-2 text-sm w-full h-10"
             />
+            {!dropoff && <p className="text-xs text-gray-500">Choose Drop-off Date</p>}
           </div>
 
-          {/* Vehicle Class */}
-          <div className="flex flex-col flex-1 min-w-[150px]">
+          <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Vehicle Class</label>
             <select
               value={vehicleClass}
@@ -111,7 +163,7 @@ export default function BookingBar() {
                 setVehicleClass(e.target.value);
                 setVehicle("");
               }}
-              className="border rounded-md px-3 py-2 text-sm w-full"
+              className="border rounded-md px-3 py-2 text-sm w-full h-10"
             >
               <option value="">Choose Class</option>
               {Object.keys(vehicleOptions).map((cls) => (
@@ -122,14 +174,13 @@ export default function BookingBar() {
             </select>
           </div>
 
-          {/* Vehicle */}
-          <div className="flex flex-col flex-1 min-w-[150px]">
+          <div className="flex flex-col flex-1 min-w-[180px]">
             <label className="text-sm font-medium">Vehicle</label>
             <select
               value={vehicle}
               onChange={(e) => setVehicle(e.target.value)}
               disabled={!vehicleClass}
-              className="border rounded-md px-3 py-2 text-sm w-full"
+              className="border rounded-md px-3 py-2 text-sm w-full h-10"
             >
               <option value="">Choose Vehicle</option>
               {vehicleClass &&
@@ -144,14 +195,123 @@ export default function BookingBar() {
           <button
             onClick={goToBook}
             disabled={!canQuote()}
-            className="bg-blue-600 disabled:opacity-50 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium mt-2 md:mt-0"
+            className="bg-blue-600 disabled:opacity-50 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium mt-2 md:mt-0 h-10"
           >
             Get Instant Quote
           </button>
         </div>
       )}
 
-      {/* Step 2 + Step 3 stay unchanged */}
+      {/* Step 2: Booking Form */}
+      {step === "book" && (
+        <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-4">
+          <p className="text-xl font-bold text-green-700">
+            ✅ Quote: ${quote} for {days} days
+          </p>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-medium">Full Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="border rounded-md px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-medium">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="border rounded-md px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-medium">Phone Number</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              className="border rounded-md px-3 py-2 text-sm"
+            />
+          </div>
+
+          {/* Upload License */}
+          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
+            <span className="text-3xl">🪪</span>
+            <span className="text-sm font-medium">Upload Driver’s License</span>
+            <input
+              type="file"
+              onChange={(e) => setLicenseFile(e.target.files?.[0] || null)}
+              accept="image/*,application/pdf"
+              required
+              className="hidden"
+            />
+            {licenseFile && <span className="mt-1 text-xs">{licenseFile.name}</span>}
+            {licenseUrl && (
+              <a
+                href={licenseUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline text-xs"
+              >
+                View License
+              </a>
+            )}
+          </label>
+
+          {/* Upload Insurance */}
+          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
+            <span className="text-3xl">🛡️</span>
+            <span className="text-sm font-medium">Upload Proof of Insurance</span>
+            <input
+              type="file"
+              onChange={(e) => setInsuranceFile(e.target.files?.[0] || null)}
+              accept="image/*,application/pdf"
+              required
+              className="hidden"
+            />
+            {insuranceFile && <span className="mt-1 text-xs">{insuranceFile.name}</span>}
+            {insuranceUrl && (
+              <a
+                href={insuranceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline text-xs"
+              >
+                View Insurance
+              </a>
+            )}
+          </label>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm font-medium"
+          >
+            {submitting ? "Submitting..." : "Confirm Booking"}
+          </button>
+
+          {status && (
+            <p className={status.ok ? "text-green-600 text-sm" : "text-red-600 text-sm"}>
+              {status.msg}
+            </p>
+          )}
+        </form>
+      )}
+
+      {/* Step 3: Confirmation */}
+      {step === "verify" && (
+        <div className="text-center text-green-700 font-medium">
+          🎉 Thank you! We’ve received your request and will reach out shortly with pickup details.
+        </div>
+      )}
     </div>
   );
 }
