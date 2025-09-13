@@ -1,6 +1,3 @@
-// src/app/rental-agreement/page.tsx
-import Footer from "@/components/Footer";
-
 export default function RentalAgreementPage() {
   return (
     <main>
@@ -14,13 +11,13 @@ export default function RentalAgreementPage() {
 
       {/* Agreement Content */}
       <section className="section max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-6">Terms & Conditions</h2>
+        <h2 className="text-2xl font-semibold mb-6">Terms &amp; Conditions</h2>
         <div className="space-y-6 text-gray-700">
           <div>
             <h3 className="font-medium text-lg mb-2">1. Driver Requirements</h3>
             <p>
-              All renters must be at least <span className="font-semibold">21 years of age</span>
-              and present a valid driver’s license at the time of rental. International licenses are accepted
+              All renters must be at least <span className="font-semibold">21 years of age</span>{" "}
+              and present a valid driver&apos;s license at the time of rental. International licenses are accepted
               if accompanied by a passport.
             </p>
           </div>
@@ -50,7 +47,7 @@ export default function RentalAgreementPage() {
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-2">5. Mileage & Travel</h3>
+            <h3 className="font-medium text-lg mb-2">5. Mileage &amp; Travel</h3>
             <p>
               Rentals include a standard mileage allowance. Out-of-state travel must be disclosed in advance
               to confirm insurance coverage.
@@ -58,9 +55,9 @@ export default function RentalAgreementPage() {
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-2">6. Extensions & Cancellations</h3>
+            <h3 className="font-medium text-lg mb-2">6. Extensions &amp; Cancellations</h3>
             <p>
-              Extensions are simple — just contact us before your return date. Cancellations are free of charge,
+              Extensions are simple &mdash; just contact us before your return date. Cancellations are free of charge,
               but please notify us as early as possible.
             </p>
           </div>

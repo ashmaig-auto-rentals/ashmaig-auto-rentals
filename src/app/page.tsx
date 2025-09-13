@@ -1,4 +1,3 @@
-// src/app/page.tsx
 import Image from "next/image";
 import Link from "next/link";
 import BookingBar from "@/components/BookingBar";
@@ -169,7 +168,7 @@ export default function HomePage() {
         <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
           <div className="p-6 bg-white rounded-lg shadow-md">
             <p className="text-blue-600 text-3xl mb-3">📅</p>
-            <h3 className="font-medium">1. Pick Your Dates & Car</h3>
+            <h3 className="font-medium">1. Pick Your Dates &amp; Car</h3>
             <p className="text-gray-600 text-sm mt-2">
               Select your rental period and vehicle that best fits your trip.
             </p>
@@ -190,7 +189,7 @@ export default function HomePage() {
           </div>
           <div className="p-6 bg-white rounded-lg shadow-md">
             <p className="text-yellow-500 text-3xl mb-3">🚗</p>
-            <h3 className="font-medium">4. Confirm & Drive Away</h3>
+            <h3 className="font-medium">4. Confirm &amp; Drive Away</h3>
             <p className="text-gray-600 text-sm mt-2">
               Complete your payment, and enjoy a stress-free pickup.
             </p>
@@ -224,21 +223,21 @@ export default function HomePage() {
             <div className="p-4 bg-gray-50 rounded-lg shadow-sm">
               <p className="text-yellow-500">★★★★★</p>
               <p className="mt-2 text-gray-700">
-                "Ashmaig Auto Rentals made everything simple. The SUV was spotless and pickup was fast!"
+                &quot;Ashmaig Auto Rentals made everything simple. The SUV was spotless and pickup was fast!&quot;
               </p>
               <p className="mt-2 text-sm font-medium">— Sarah K.</p>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg shadow-sm">
               <p className="text-yellow-500">★★★★★</p>
               <p className="mt-2 text-gray-700">
-                "Best rental experience I’ve had in Phoenix. Transparent pricing and friendly service."
+                &quot;Best rental experience I’ve had in Phoenix. Transparent pricing and friendly service.&quot;
               </p>
               <p className="mt-2 text-sm font-medium">— James R.</p>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg shadow-sm">
               <p className="text-yellow-500">★★★★★</p>
               <p className="mt-2 text-gray-700">
-                "Loved the convenience and the clean car. Definitely booking here again!"
+                &quot;Loved the convenience and the clean car. Definitely booking here again!&quot;
               </p>
               <p className="mt-2 text-sm font-medium">— Maria L.</p>
             </div>
