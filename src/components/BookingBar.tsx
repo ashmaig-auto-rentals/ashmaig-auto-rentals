@@ -8,18 +8,9 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 let _supabase: SupabaseClient | null = null;
 function getSupabase(): SupabaseClient {
   if (_supabase) return _supabase;
-
-  // 🔎 Debug env vars
-  console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-  console.log(
-    "Supabase Key exists:",
-    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
-
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) throw new Error("Supabase env vars missing");
-
   _supabase = createClient(url, key);
   return _supabase;
 }
@@ -40,20 +31,16 @@ export default function BookingBar() {
   const [phone, setPhone] = useState("");
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [insuranceFile, setInsuranceFile] = useState<File | null>(null);
+  const [licenseUrl, setLicenseUrl] = useState<string | null>(null);
+  const [insuranceUrl, setInsuranceUrl] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(
-    null
-  );
+  const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(null);
 
   const vehicleOptions: Record<string, string[]> = {
     Sedan: ["2020 Toyota Camry", "2017 Hyundai Sonata", "2014 Ford Fusion"],
     SUV: ["2017 Toyota RAV4", "2017 Honda CR-V", "2019 Hyundai Santa Fe"],
-    "3-Row SUV": [
-      "2019 Chevy Suburban",
-      "2020 Toyota Sienna",
-      "2022 Chrysler Pacifica",
-    ],
+    "3-Row SUV": ["2019 Chevy Suburban", "2020 Toyota Sienna", "2022 Chrysler Pacifica"],
   };
 
   const rates: Record<string, number> = {
@@ -77,7 +64,7 @@ export default function BookingBar() {
   }, [vehicleClass, days]);
 
   function canQuote() {
-    return Boolean(pickup && dropoff && vehicleClass && days > 0);
+    return Boolean(pickup && dropoff && vehicleClass && vehicle && days > 0);
   }
 
   function goToBook() {
@@ -108,11 +95,14 @@ export default function BookingBar() {
       if (licenseFile) licenseLink = await uploadFile(licenseFile, "license");
       if (insuranceFile) insuranceLink = await uploadFile(insuranceFile, "insurance");
 
+      setLicenseUrl(licenseLink || null);
+      setInsuranceUrl(insuranceLink || null);
+
       const payload = {
         name,
         email,
         phone,
-        vehicle: vehicle || vehicleClass,
+        vehicle: vehicle || vehicleClass, // ✅ match {{vehicle}} in template
         pickup_date: pickup,
         dropoff_date: dropoff,
         days: String(days),
@@ -236,6 +226,8 @@ export default function BookingBar() {
             required
             className="border rounded-md px-3 py-2 text-sm"
           />
+
+          {/* Upload license */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
             <span className="text-3xl">🪪</span>
             <span className="text-sm font-medium">Upload Driver’s License</span>
@@ -246,7 +238,20 @@ export default function BookingBar() {
               required
               className="hidden"
             />
+            {licenseFile && <span className="mt-1 text-xs">{licenseFile.name}</span>}
+            {licenseUrl && (
+              <a
+                href={licenseUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline text-xs"
+              >
+                View License
+              </a>
+            )}
           </label>
+
+          {/* Upload insurance */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50">
             <span className="text-3xl">🛡️</span>
             <span className="text-sm font-medium">Upload Proof of Insurance</span>
@@ -257,7 +262,19 @@ export default function BookingBar() {
               required
               className="hidden"
             />
+            {insuranceFile && <span className="mt-1 text-xs">{insuranceFile.name}</span>}
+            {insuranceUrl && (
+              <a
+                href={insuranceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline text-xs"
+              >
+                View Insurance
+              </a>
+            )}
           </label>
+
           <button
             type="submit"
             disabled={submitting}
@@ -265,12 +282,9 @@ export default function BookingBar() {
           >
             {submitting ? "Submitting..." : "Confirm Booking"}
           </button>
+
           {status && (
-            <p
-              className={
-                status.ok ? "text-green-600 text-sm" : "text-red-600 text-sm"
-              }
-            >
+            <p className={status.ok ? "text-green-600 text-sm" : "text-red-600 text-sm"}>
               {status.msg}
             </p>
           )}
