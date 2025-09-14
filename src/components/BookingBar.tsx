@@ -243,7 +243,7 @@ export default function BookingBar() {
 
           <input
             type="email"
-            placeholder="Email (you’ll receive confirmation)"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
