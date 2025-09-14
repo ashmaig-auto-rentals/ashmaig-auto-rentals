@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-// Lazy Supabase init
+// ---- Supabase (graceful: uploads disabled if envs missing) ----
 let _supabase: SupabaseClient | null = null;
-function getSupabase(): SupabaseClient {
+function getSupabase(): SupabaseClient | null {
   if (_supabase) return _supabase;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) throw new Error("Supabase env vars missing");
+  if (!url || !key) {
+    console.warn("⚠️ Supabase env vars missing; uploads will be skipped.");
+    return null;
+  }
   _supabase = createClient(url, key);
   return _supabase;
 }
@@ -43,17 +46,22 @@ export default function BookingBar() {
     "3-Row SUV": ["2019 Chevy Suburban", "2020 Toyota Sienna", "2022 Chrysler Pacifica"],
   };
 
-  const rates: Record<string, number> = {
-    Sedan: 50,
-    SUV: 60,
-    "3-Row SUV": 70,
-  };
+  const rates: Record<string, number> = { Sedan: 50, SUV: 60, "3-Row SUV": 70 };
+
+  // Debug once on mount
+  useEffect(() => {
+    console.log("🔎 ENV CHECK");
+    console.log("NEXT_PUBLIC_EMAILJS_SERVICE_ID:", process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID);
+    console.log("NEXT_PUBLIC_EMAILJS_TEMPLATE_ID:", process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID);
+    console.log("NEXT_PUBLIC_EMAILJS_PUBLIC_KEY:", process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY);
+    console.log("NEXT_PUBLIC_SUPABASE_URL exists:", !!process.env.NEXT_PUBLIC_SUPABASE_URL);
+    console.log("NEXT_PUBLIC_SUPABASE_ANON_KEY exists:", !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  }, []);
 
   const days = useMemo(() => {
     if (!pickup || !dropoff) return 0;
     const diff = Math.ceil(
-      (new Date(dropoff).getTime() - new Date(pickup).getTime()) /
-        (1000 * 60 * 60 * 24)
+      (new Date(dropoff).getTime() - new Date(pickup).getTime()) / (1000 * 60 * 60 * 24)
     );
     return diff > 0 ? diff : 0;
   }, [pickup, dropoff]);
@@ -78,45 +86,65 @@ export default function BookingBar() {
     setSubmitting(true);
     setStatus(null);
 
-    try {
-      const supabase = getSupabase();
+    console.log("🟢 SUBMIT START");
 
+    try {
+      // Prepare payload (before uploads for visibility)
+      const basePayload = {
+        name,
+        email, // <- your template uses {{email}} for the "To" field
+        phone,
+        vehicle: vehicle || vehicleClass,
+        pickup_date: pickup,
+        dropoff_date: dropoff,
+        days: String(days),
+        quote: String(quote),
+        license_url: "",   // will fill if uploaded
+        insurance_url: "", // will fill if uploaded
+      };
+      console.log("📦 Base payload:", basePayload);
+
+      // Uploads (optional)
+      const supabase = getSupabase();
       async function uploadFile(file: File, prefix: string) {
+        if (!supabase) {
+          console.warn(`⏭️ Skipping ${prefix} upload (no Supabase).`);
+          return "";
+        }
         const ext = file.name.split(".").pop();
         const path = `${prefix}_${Date.now()}.${ext}`;
+        console.log(`📤 Uploading ${prefix} → ${path}`);
         const { error } = await supabase.storage.from(BUCKET).upload(path, file);
-        if (error) throw error;
+        if (error) {
+          console.error(`❌ Upload ${prefix} failed:`, error.message);
+          return ""; // don’t throw; continue sending the email without links
+        }
         const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+        console.log(`✅ Uploaded ${prefix}:`, data.publicUrl);
         return data.publicUrl;
       }
 
-      let licenseLink = "";
-      let insuranceLink = "";
-      if (licenseFile) licenseLink = await uploadFile(licenseFile, "license");
-      if (insuranceFile) insuranceLink = await uploadFile(insuranceFile, "insurance");
+      const licenseLink = licenseFile ? await uploadFile(licenseFile, "license") : "";
+      const insuranceLink = insuranceFile ? await uploadFile(insuranceFile, "insurance") : "";
 
       setLicenseUrl(licenseLink || null);
       setInsuranceUrl(insuranceLink || null);
 
       const payload = {
-        name,
-        email,
-        phone,
-        vehicle: vehicle || vehicleClass, // ✅ match {{vehicle}}
-        pickup_date: pickup,
-        dropoff_date: dropoff,
-        days: String(days),
-        quote: String(quote),
+        ...basePayload,
         license_url: licenseLink,
         insurance_url: insuranceLink,
       };
 
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        payload,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
+      console.log("✉️ Sending EmailJS with payload:", payload);
+
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
+
+      const res = await emailjs.send(serviceId, templateId, payload, publicKey);
+
+      console.log("✅ EmailJS response:", res); // { status, text }
 
       setStatus({ ok: true, msg: "Booking submitted successfully!" });
       setStep("verify");
@@ -125,6 +153,7 @@ export default function BookingBar() {
       setStatus({ ok: false, msg: "Error submitting booking." });
     } finally {
       setSubmitting(false);
+      console.log("🔚 SUBMIT END");
     }
   }
 
@@ -202,6 +231,7 @@ export default function BookingBar() {
           <p className="text-xl font-bold text-green-700 dark:text-green-400">
             ✅ Quote: ${quote} for {days} days
           </p>
+
           <input
             type="text"
             placeholder="Full Name"
@@ -210,14 +240,16 @@ export default function BookingBar() {
             required
             className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
+
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Email (you’ll receive confirmation)"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
+
           <input
             type="tel"
             placeholder="Phone Number"
@@ -227,15 +259,14 @@ export default function BookingBar() {
             className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
 
-          {/* Upload license */}
+          {/* Upload license (optional) */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
             <span className="text-3xl">🪪</span>
-            <span className="text-sm font-medium">Upload Driver’s License</span>
+            <span className="text-sm font-medium">Upload Driver’s License (optional)</span>
             <input
               type="file"
               onChange={(e) => setLicenseFile(e.target.files?.[0] || null)}
               accept="image/*,application/pdf"
-              required
               className="hidden"
             />
             {licenseFile && <span className="mt-1 text-xs">{licenseFile.name}</span>}
@@ -251,15 +282,14 @@ export default function BookingBar() {
             )}
           </label>
 
-          {/* Upload insurance */}
+          {/* Upload insurance (optional) */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
             <span className="text-3xl">🛡️</span>
-            <span className="text-sm font-medium">Upload Proof of Insurance</span>
+            <span className="text-sm font-medium">Upload Proof of Insurance (optional)</span>
             <input
               type="file"
               onChange={(e) => setInsuranceFile(e.target.files?.[0] || null)}
               accept="image/*,application/pdf"
-              required
               className="hidden"
             />
             {insuranceFile && <span className="mt-1 text-xs">{insuranceFile.name}</span>}
@@ -284,7 +314,13 @@ export default function BookingBar() {
           </button>
 
           {status && (
-            <p className={status.ok ? "text-green-600 dark:text-green-400 text-sm" : "text-red-600 dark:text-red-400 text-sm"}>
+            <p
+              className={
+                status.ok
+                  ? "text-green-600 dark:text-green-400 text-sm"
+                  : "text-red-600 dark:text-red-400 text-sm"
+              }
+            >
               {status.msg}
             </p>
           )}
