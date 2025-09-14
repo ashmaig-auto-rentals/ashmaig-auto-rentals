@@ -262,7 +262,7 @@ export default function BookingBar() {
           {/* Upload license (optional) */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
             <span className="text-3xl">🪪</span>
-            <span className="text-sm font-medium">Upload Driver’s License (optional)</span>
+            <span className="text-sm font-medium">Upload Driver’s License</span>
             <input
               type="file"
               onChange={(e) => setLicenseFile(e.target.files?.[0] || null)}
@@ -285,7 +285,7 @@ export default function BookingBar() {
           {/* Upload insurance (optional) */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
             <span className="text-3xl">🛡️</span>
-            <span className="text-sm font-medium">Upload Proof of Insurance (optional)</span>
+            <span className="text-sm font-medium">Upload Proof of Insurance</span>
             <input
               type="file"
               onChange={(e) => setInsuranceFile(e.target.files?.[0] || null)}
