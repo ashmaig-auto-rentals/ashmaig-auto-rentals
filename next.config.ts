@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: true, // 301 redirect
       },
+      {
+        source: "/shop",
+        destination: "/",
+        permanent: true, // 301 redirect
+      },
     ];
   },
 };
