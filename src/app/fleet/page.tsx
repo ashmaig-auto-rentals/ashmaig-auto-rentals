@@ -5,18 +5,18 @@ export default function FleetPage() {
   const vehicles = [
     // Sedans
     { name: "2020 Toyota Camry", price: 50, img: "/toyota-camry-2020.png", slug: "camry-2020" },
-    { name: "2017 Hyundai Sonata", price: 45, img: "/hyundai-sonata-2017.png", slug: "hyundai-sonata-2017" },
-    { name: "2014 Ford Fusion", price: 40, img: "/ford-fusion-2014.png", slug: "ford-fusion-2014" },
+    { name: "2017 Hyundai Sonata", price: 50, img: "/hyundai-sonata-2017.png", slug: "hyundai-sonata-2017" },
+    { name: "2014 Ford Fusion", price: 50, img: "/ford-fusion-2014.png", slug: "ford-fusion-2014" },
 
     // SUVs
-    { name: "2017 Toyota RAV4", price: 55, img: "/toyota-rav4-2017.png", slug: "toyota-rav4-2017" },
-    { name: "2017 Honda CR-V", price: 55, img: "/honda-crv-2017.png", slug: "honda-crv-2017" },
+    { name: "2017 Toyota RAV4", price: 60, img: "/toyota-rav4-2017.png", slug: "toyota-rav4-2017" },
+    { name: "2017 Honda CR-V", price: 60, img: "/honda-crv-2017.png", slug: "honda-crv-2017" },
     { name: "2019 Hyundai Santa Fe", price: 60, img: "/hyundai-santa-fe-2019.png", slug: "hyundai-santa-fe-2019" },
 
     // 3-Row SUVs
     { name: "2019 Chevy Suburban", price: 70, img: "/chevy-suburban-2019.png", slug: "chevy-suburban-2019" },
     { name: "2020 Toyota Sienna", price: 70, img: "/toyota-sienna-2020.png", slug: "toyota-sienna-2020" },
-    { name: "2022 Chrysler Pacifica", price: 75, img: "/chrysler-pacifica-2022.png", slug: "chrysler-pacifica-2022" },
+    { name: "2022 Chrysler Pacifica", price: 70, img: "/chrysler-pacifica-2022.png", slug: "chrysler-pacifica-2022" },
   ];
 
   return (

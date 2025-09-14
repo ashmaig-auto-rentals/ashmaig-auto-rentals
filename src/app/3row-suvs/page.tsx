@@ -4,13 +4,17 @@ import Link from "next/link";
 export default function ThreeRowSuvsPage() {
   const threeRow = [
     { name: "2019 Chevy Suburban", price: 70, img: "/chevy-suburban.png", slug: "chevy-suburban-2019" },
-    { name: "2020 Toyota Sienna", price: 70, img: "/toyota-sienna.png", slug: "toyota-sienna-2020" },
-    { name: "2022 Chrysler Pacifica", price: 75, img: "/chrysler-pacifica.png", slug: "chrysler-pacifica-2022" },
+    { name: "2020 Dodge Grand Caravan", price: 70, img: "/grand-caravan.png", slug: "grand-caravan-2020" },
+    { name: "2022 Chrysler Pacifica", price: 70, img: "/chrysler-pacifica.png", slug: "chrysler-pacifica-2022" },
   ];
 
   return (
     <main className="section">
-      <h1 className="text-3xl font-bold mb-6">3-Row SUVs</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">3-Row SUVs & Vans</h1>
+      <p className="text-center text-gray-600 max-w-2xl mx-auto mb-8">
+        Need extra seating and cargo space? Our 3-row SUVs and vans are perfect for family trips, 
+        group travel, or anyone who wants maximum room with comfort.
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {threeRow.map((car, idx) => (
           <div

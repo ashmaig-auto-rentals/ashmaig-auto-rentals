@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown, ChevronRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,16 +17,50 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 relative">
-            <Link href="/about" className="font-medium text-gray-700 hover:text-blue-600">
+            <Link
+              href="/about"
+              className="font-medium text-gray-700 hover:text-blue-600"
+            >
               About Us
             </Link>
-            <Link href="/fleet" className="font-medium text-gray-700 hover:text-blue-600">
-              Fleet
-            </Link>
-            <Link href="/rental-agreement" className="font-medium text-gray-700 hover:text-blue-600">
+
+            {/* Fleet Dropdown */}
+            <div className="relative group">
+              <button className="font-medium text-gray-700 hover:text-blue-600">
+                Fleet
+              </button>
+              <div className="absolute top-full left-0 hidden group-hover:block bg-white shadow-lg border rounded-md w-56">
+                <Link
+                  href="/sedans"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                >
+                  Sedans
+                </Link>
+                <Link
+                  href="/suvs"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                >
+                  SUVs
+                </Link>
+                <Link
+                  href="/3row-suvs"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                >
+                  3-Row SUVs & Vans
+                </Link>
+              </div>
+            </div>
+
+            <Link
+              href="/rental-agreement"
+              className="font-medium text-gray-700 hover:text-blue-600"
+            >
               Rental Agreement
             </Link>
-            <Link href="/contact" className="font-medium text-gray-700 hover:text-blue-600">
+            <Link
+              href="/contact"
+              className="font-medium text-gray-700 hover:text-blue-600"
+            >
               Contact Us
             </Link>
           </nav>
@@ -39,7 +73,7 @@ export default function Header() {
             📞 Call Us
           </a>
 
-          {/* Mobile Toggle Button */}
+          {/* Mobile Toggle */}
           <button
             className="md:hidden text-gray-700"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -48,48 +82,6 @@ export default function Header() {
           </button>
         </div>
       </div>
-
-      {/* Mobile Sidebar Menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-white shadow-lg border-t">
-          <div className="flex flex-col space-y-2 p-4">
-            <Link
-              href="/about"
-              className="block text-gray-700 hover:text-blue-600"
-              onClick={() => setMenuOpen(false)}
-            >
-              About Us
-            </Link>
-            <Link
-              href="/fleet"
-              className="block text-gray-700 hover:text-blue-600"
-              onClick={() => setMenuOpen(false)}
-            >
-              Fleet
-            </Link>
-            <Link
-              href="/rental-agreement"
-              className="block text-gray-700 hover:text-blue-600"
-              onClick={() => setMenuOpen(false)}
-            >
-              Rental Agreement
-            </Link>
-            <Link
-              href="/contact"
-              className="block text-gray-700 hover:text-blue-600"
-              onClick={() => setMenuOpen(false)}
-            >
-              Contact Us
-            </Link>
-            <a
-              href="tel:6237772376"
-              className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 text-center"
-            >
-              📞 Call Us
-            </a>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

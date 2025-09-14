@@ -109,34 +109,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Fleet Section */}
-      <section className="section">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Featured Vehicles</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { name: "2014 Ford Fusion", price: 40, img: "/ford-fusion.png", slug: "ford-fusion" },
-            { name: "2017 Hyundai Sonata", price: 45, img: "/hyundai-sonata.png", slug: "hyundai-sonata" },
-            { name: "2017 Toyota RAV4", price: 55, img: "/toyota-rav4.png", slug: "toyota-rav4" },
-          ].map((car, idx) => (
-            <div key={idx} className="rounded-lg border bg-white dark:bg-slate-800 dark:border-gray-600 shadow-md hover:shadow-lg transition overflow-hidden">
-              <div className="relative h-48">
-                <Image src={car.img} alt={car.name} fill className="object-cover" />
-              </div>
-              <div className="p-4 text-center">
-                <h3 className="font-medium">{car.name}</h3>
-                <p className="text-gray-600 dark:text-gray-300">${car.price}/day</p>
-                <Link
-                  href={`/vehicles/${car.slug}`}
-                  className="mt-3 inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
-                >
-                  Learn More
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Process Section */}
       <section className="section bg-gray-50 dark:bg-slate-800 text-center">
         <h2 className="text-2xl font-semibold mb-8">How It Works</h2>
@@ -147,10 +119,38 @@ export default function HomePage() {
             { icon: "📲", title: "3. Quick Confirmation", desc: "After you submit, we’ll reach back out with pickup instructions." },
             { icon: "🚗", title: "4. Confirm & Drive Away", desc: "Complete your payment, and enjoy a stress-free pickup." },
           ].map((step) => (
-            <div key={step.title} className="p-6 bg-white dark:bg-slate-700 rounded-lg shadow-md border border-gray-200 dark:border-gray-600">
+            <div
+              key={step.title}
+              className="p-6 bg-white dark:bg-slate-700 rounded-lg shadow-md border border-gray-200 dark:border-gray-600"
+            >
               <p className="text-3xl mb-3">{step.icon}</p>
               <h3 className="font-medium">{step.title}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Featured Fleet Section (moved here) */}
+      <section className="section">
+        <h2 className="text-2xl font-semibold mb-6 text-center">Featured Vehicles</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { name: "2014 Ford Fusion", price: 50, img: "/ford-fusion.png" },
+            { name: "2017 Hyundai Sonata", price: 50, img: "/hyundai-sonata.png" },
+            { name: "2017 Toyota RAV4", price: 60, img: "/toyota-rav4.png" },
+          ].map((car, idx) => (
+            <div
+              key={idx}
+              className="rounded-lg border bg-white dark:bg-slate-800 dark:border-gray-600 shadow-md hover:shadow-lg transition overflow-hidden"
+            >
+              <div className="relative h-48">
+                <Image src={car.img} alt={car.name} fill className="object-cover" />
+              </div>
+              <div className="p-4 text-center">
+                <h3 className="font-medium">{car.name}</h3>
+                <p className="text-gray-600 dark:text-gray-300">${car.price}/day</p>
+              </div>
             </div>
           ))}
         </div>

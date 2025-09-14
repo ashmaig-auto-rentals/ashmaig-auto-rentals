@@ -3,16 +3,16 @@ import Link from "next/link";
 
 export default function SedansPage() {
   const sedans = [
-    { name: "2020 Toyota Camry", price: 50, img: "/toyota-camry-2020.png", slug: "camry-2020" },
-    { name: "2017 Hyundai Sonata", price: 45, img: "/hyundai-sonata-2017.png", slug: "hyundai-sonata-2017" },
-    { name: "2014 Ford Fusion", price: 40, img: "/ford-fusion-2014.png", slug: "ford-fusion-2014" },
+    { name: "2020 Toyota Camry", price: 50, img: "/camry.png", slug: "camry-2020" },
+    { name: "2017 Hyundai Sonata", price: 50, img: "/hyundai-sonata.png", slug: "hyundai-sonata-2017" },
+    { name: "2014 Ford Fusion", price: 50, img: "/ford-fusion.png", slug: "ford-fusion-2014" },
   ];
 
   return (
     <main className="section">
       <h1 className="text-3xl font-bold text-center mb-10">Sedans</h1>
       <p className="text-center text-gray-600 max-w-2xl mx-auto mb-8">
-        Our sedan lineup offers comfortable, fuel-efficient cars perfect for both city and highway driving. 
+        Our sedan lineup offers comfortable, fuel-efficient cars perfect for both city and highway driving.
         Reliable, clean, and affordable — great for everyday use or longer trips.
       </p>
 
