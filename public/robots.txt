@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://ashmaigautorentals.com
+
+# Sitemaps
+Sitemap: https://ashmaigautorentals.com/sitemap.xml
