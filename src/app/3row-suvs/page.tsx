@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function ThreeRowSuvsPage() {
   const threeRow = [
@@ -27,12 +26,6 @@ export default function ThreeRowSuvsPage() {
             <div className="p-4 text-center">
               <h3 className="font-medium">{car.name}</h3>
               <p className="text-gray-600">${car.price}/day</p>
-              <Link
-                href={`/vehicles/${car.slug}`}
-                className="mt-3 inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
-              >
-                Learn More
-              </Link>
             </div>
           </div>
         ))}

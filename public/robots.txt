@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://ashmaigautorentals.com
+Host: https://ashmaig.com
 
 # Sitemaps
-Sitemap: https://ashmaigautorentals.com/sitemap.xml
+Sitemap: https://ashmaig.com/sitemap.xml
