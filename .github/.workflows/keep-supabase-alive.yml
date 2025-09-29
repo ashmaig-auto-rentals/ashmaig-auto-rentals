@@ -2,7 +2,7 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    - cron: "0 */3 * * *" # every 3 hours
+    - cron: "0 */6 * * *" # every 3 hours
   workflow_dispatch: # lets you run manually from GitHub if needed
 
 jobs:
@@ -11,3 +11,5 @@ jobs:
     steps:
       - name: Ping Supabase
         run: curl -I https://dahpabsqyyuvbkjyklov.supabase.co/rest/v1/
+
+        
