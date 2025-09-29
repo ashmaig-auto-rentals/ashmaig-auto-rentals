@@ -11,5 +11,3 @@ jobs:
     steps:
       - name: Ping Supabase
         run: curl -I https://dahpabsqyyuvbkjyklov.supabase.co/rest/v1/
-
-        
