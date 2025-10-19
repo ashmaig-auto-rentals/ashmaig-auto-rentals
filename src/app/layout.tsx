@@ -1,10 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import Footer from "@/components/Footer";
-
-// ✅ Dynamically import Header as a client component
-const Header = dynamic(() => import("@/components/Header"), { ssr: false });
+import HeaderClientWrapper from "@/components/HeaderClientWrapper"; // ✅ use wrapper
 
 export const metadata: Metadata = {
   title:
@@ -50,16 +47,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-        {/* ✅ Client-side interactive Header */}
-        <Header />
+        {/* ✅ Interactive Header */}
+        <HeaderClientWrapper />
 
-        {/* Page content */}
         <main className="flex-1">{children}</main>
-
-        {/* Footer always at the bottom */}
         <Footer />
 
-        {/* ✅ JSON-LD Structured Data for SEO */}
+        {/* SEO structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
