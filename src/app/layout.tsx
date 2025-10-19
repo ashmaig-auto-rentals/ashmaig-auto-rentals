@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
-import HeaderClientWrapper from "@/components/HeaderClientWrapper"; // ✅ use wrapper
+import HeaderClientWrapper from "../components/HeaderClientWrapper";
 
 export const metadata: Metadata = {
   title:
