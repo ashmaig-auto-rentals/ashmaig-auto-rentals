@@ -1,7 +1,10 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import Header from "@/components/Header";
+import dynamic from "next/dynamic";
 import Footer from "@/components/Footer";
+
+// ✅ Dynamically import Header as a client component
+const Header = dynamic(() => import("@/components/Header"), { ssr: false });
 
 export const metadata: Metadata = {
   title:
@@ -47,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-        {/* Header always at the top */}
+        {/* ✅ Client-side interactive Header */}
         <Header />
 
         {/* Page content */}
@@ -56,7 +59,7 @@ export default function RootLayout({
         {/* Footer always at the bottom */}
         <Footer />
 
-        {/* JSON-LD Structured Data for SEO */}
+        {/* ✅ JSON-LD Structured Data for SEO */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
