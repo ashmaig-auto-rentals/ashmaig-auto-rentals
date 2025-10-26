@@ -1,0 +1,11 @@
+name: Keep Project Alive
+on:
+  schedule:
+    #- cron: '0 */6 * * *'  # every 6 hours
+    - cron: '0 12 * * *'   # once every day at noon UTC
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping site
+        run: curl -s https://ashmaig.com/api/health
