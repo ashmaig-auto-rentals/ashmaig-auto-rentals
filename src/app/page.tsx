@@ -43,7 +43,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
         <div className="relative z-10 section h-full flex flex-col items-start pt-16">
           <h1 className="text-4xl md:text-6xl font-semibold text-white max-w-3xl">
-            Reliable, Long-Term Car Rentals in Phoenix, AZ
+            Reliable Car Rentals in Phoenix, AZ
           </h1>
           <p className="mt-4 text-lg text-gray-200 max-w-2xl">
             Pick your dates, choose a car, and drive.
