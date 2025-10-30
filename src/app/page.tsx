@@ -316,7 +316,7 @@ export default function HomePage() {
         <h2 className="text-2xl font-semibold mb-4 text-center">Our Location</h2>
         <div className="w-full h-96">
           <iframe
-            src="https://www.google.com/maps?q=3400+Sky+Harbor+Blvd,+Phoenix,+AZ&output=embed"
+            src="https://www.google.com/maps?q=3750+E+Washington+St,+Phoenix,+AZ&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}
