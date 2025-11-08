@@ -2,9 +2,9 @@ import Image from "next/image";
 
 export default function SuvsPage() {
   const suvs = [
-    { name: "2019 Hyundai Santa Fe", price: 50, img: "/hyundai-santa-fe.png", slug: "hyundai-santa-fe-2019" },
-    { name: "2017 Honda CR-V", price: 50, img: "/honda-crv.png", slug: "honda-crv-2017" },
-    { name: "2017 Toyota RAV4", price: 50, img: "/toyota-rav4.png", slug: "toyota-rav4-2017" },
+    { name: "2019 Hyundai Santa Fe", price: 60, img: "/hyundai-santa-fe.png", slug: "hyundai-santa-fe-2019" },
+    { name: "2017 Honda CR-V", price: 60, img: "/honda-crv.png", slug: "honda-crv-2017" },
+    { name: "2017 Toyota RAV4", price: 60, img: "/toyota-rav4.png", slug: "toyota-rav4-2017" },
   ];
 
   return (
