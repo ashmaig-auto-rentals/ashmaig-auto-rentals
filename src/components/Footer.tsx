@@ -4,7 +4,7 @@ export default function Footer() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between gap-8">
           {/* Left side: brand + tagline */}
           <div>
-            <h2 className="text-2xl font-bold">Ashmaig Auto Rentals</h2>
+            <h2 className="text-2xl font-bold">Ashmaig Rideshare Rentals</h2>
             <p className="mt-2 text-sm text-gray-400">
               Affordable & reliable long-term car rentals in Phoenix.
             </p>
@@ -33,7 +33,7 @@ export default function Footer() {
   
         {/* Bottom bar */}
         <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-400">
-          © {new Date().getFullYear()} Ashmaig Auto Rentals. All rights reserved.
+          © {new Date().getFullYear()} Ashmaig Rideshare Rentals. All rights reserved.
         </div>
       </footer>
     );

@@ -14,7 +14,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="text-xl font-bold text-gray-900">
-            Ashmaig Auto Rentals
+            Ashmaig Rideshare Rentals
           </Link>
 
           {/* Desktop Navigation */}
