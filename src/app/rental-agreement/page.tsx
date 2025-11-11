@@ -5,7 +5,7 @@ export default function RentalAgreementPage() {
       <section className="relative bg-blue-600 text-white py-16 text-center">
         <h1 className="text-4xl md:text-5xl font-bold">Rental Agreement</h1>
         <p className="mt-3 text-lg max-w-2xl mx-auto">
-          Please review the terms and conditions before booking with Ashmaig Rideshare Rentals.
+          Please review the terms and conditions before booking with Ashmaig Auto Rentals.
         </p>
       </section>
 
