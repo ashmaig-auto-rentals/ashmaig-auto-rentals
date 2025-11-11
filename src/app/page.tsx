@@ -12,7 +12,7 @@ export default function HomePage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CarRental",
-            name: "Ashmaig Rideshare Rentals",
+            name: "Ashmaig Auto Rentals",
             url: "https://ashmaig.com",
             telephone: "+16237772376",
             priceRange: "$$",
@@ -26,7 +26,7 @@ export default function HomePage() {
             },
             openingHours: "Mo-Su 07:00-19:00",
             description:
-              "Ashmaig Rideshare Rentals offers work-ready rental cars for rideshare and delivery drivers in Phoenix. Weekly and monthly rental options with maintenance and unlimited mileage included, and no security deposit required.",
+              "Ashmaig Auto Rentals offers work-ready rental cars for rideshare and delivery drivers in Phoenix. Weekly and monthly rental options with maintenance and unlimited mileage included, and no security deposit required.",
           }),
         }}
       />

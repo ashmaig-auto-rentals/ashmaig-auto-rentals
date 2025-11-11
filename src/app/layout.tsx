@@ -5,31 +5,31 @@ import HeaderClientWrapper from "../components/HeaderClientWrapper";
 
 export const metadata: Metadata = {
   title:
-    "Ashmaig Rideshare Rentals | Phoenix Rideshare Rentals – Affordable Rentals for Uber & Lyft Delivery",
+    "Ashmaig Auto Rentals | Phoenix Auto Rentals – Affordable Rentals for Uber & Lyft Delivery",
   description:
-    "Ashmaig Rideshare Rentals in Phoenix, AZ. Debit card friendly and flexible terms. The local alternative to Hertz with sedans, SUVs, and 3-row rentals.",
+    "Ashmaig Auto Rentals in Phoenix, AZ. Debit card friendly and flexible terms. The local alternative to Hertz with sedans, SUVs, and 3-row rentals.",
   keywords: [
     "Phoenix rideshare rental",
     "Phoenix debit card car rental",
     "delivery driver car rental",
     "SUV rental Phoenix",
     "long-term car rental Phoenix",
-    "Ashmaig Rideshare Rentals",
+    "Ashmaig Auto Rentals",
   ],
   openGraph: {
     title:
-      "Ashmaig Rideshare Rentals | Phoenix Car Rentals for Delivery Drivers",
+      "Ashmaig Auto Rentals | Phoenix Car Rentals for Delivery Drivers",
     description:
       "Rent cars in Phoenix with debit cards accepted, low deposits, and flexible rental terms. Local alternative to Hertz with sedans, SUVs, and 3-row vehicles.",
     url: "https://ashmaig.com",
-    siteName: "Ashmaig Rideshare Rentals",
+    siteName: "Ashmaig Auto Rentals",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary",
     title:
-      "Ashmaig Rideshare Rentals | Phoenix Rideshare Rentals – Affordable Rentals for Uber & Lyft Delivery",
+      "Ashmaig Auto Rentals | Phoenix Rideshare Rentals – Affordable Rentals for Uber & Lyft Delivery",
     description:
       "Debit card friendly rentals in Phoenix. Low deposits, transparent pricing, no hidden fees. SUVs, sedans, and 3-row rentals available today.",
   },
@@ -60,7 +60,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "CarRental",
-              name: "Ashmaig Rideshare Rentals",
+              name: "Ashmaig Auto Rentals",
               "@id": "https://ashmaig.com",
               url: "https://ashmaig.com",
               telephone: "+16237772376",
