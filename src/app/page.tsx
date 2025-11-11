@@ -12,7 +12,7 @@ export default function HomePage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CarRental",
-            name: "Ashmaig Auto Rentals",
+            name: "Ashmaig Rideshare Rentals",
             url: "https://ashmaig.com",
             telephone: "+16237772376",
             priceRange: "$$",
@@ -26,7 +26,7 @@ export default function HomePage() {
             },
             openingHours: "Mo-Su 07:00-19:00",
             description:
-              "Ashmaig Auto Rentals offers work-ready rental cars for rideshare and delivery drivers in Phoenix. Weekly and monthly rental options with maintenance and unlimited mileage included.",
+              "Ashmaig Rideshare Rentals offers work-ready rental cars for rideshare and delivery drivers in Phoenix. Weekly and monthly rental options with maintenance and unlimited mileage included, and no security deposit required.",
           }),
         }}
       />
@@ -46,7 +46,7 @@ export default function HomePage() {
             Phoenix Rideshare Rentals for Uber, Lyft & Delivery Drivers
           </h1>
           <p className="mt-4 text-lg text-gray-200 max-w-2xl">
-            $300/week · Unlimited Miles · Maintenance Included.
+            $350/week · Unlimited Miles · Maintenance Included  · No Security Deposit Required
           </p>
 
           {/* Booking bar (desktop only) */}
@@ -64,7 +64,7 @@ export default function HomePage() {
       {/* Call to Action Banner */}
       <section className="bg-blue-600 text-white py-12 text-center">
         <h2 className="text-3xl font-bold">Start Earning with a Reliable Work Car</h2>
-        <p className="mt-3 text-lg">Rentals from $300/week. Same-day approval and pickup.</p>
+        <p className="mt-3 text-lg">Rentals from $350/week. Same-day approval and pickup.</p>
         <a
           href="tel:6237772376"
           className="mt-6 inline-block bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100"
@@ -85,8 +85,8 @@ export default function HomePage() {
             },
             {
               icon: "🛡️",
-              title: "Full Coverage Insurance",
-              desc: "Proof of active full coverage insurance is required.",
+              title: "Liability Insurance",
+              desc: "Proof of active personal insurance policy is required.",
             },
             {
               icon: "✅",
