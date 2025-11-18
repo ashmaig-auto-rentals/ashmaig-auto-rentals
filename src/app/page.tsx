@@ -26,7 +26,7 @@ export default function HomePage() {
             },
             openingHours: "Mo-Su 07:00-19:00",
             description:
-              "Ashmaig Auto Rentals offers work-ready rental cars for rideshare and delivery drivers in Phoenix. Weekly and monthly rental options with maintenance and unlimited mileage included, and no security deposit required.",
+              "Ashmaig Auto Rentals offers work-ready rental cars for rideshare and delivery drivers in Phoenix. Weekly and monthly rental options with insurance, maintenance, and unlimited mileage included, with a simple $100 deposit.",
           }),
         }}
       />
@@ -46,7 +46,7 @@ export default function HomePage() {
             Phoenix Rideshare Rentals for Uber, Lyft & Delivery Drivers
           </h1>
           <p className="mt-4 text-lg text-gray-200 max-w-2xl">
-            $350/week · Unlimited Miles · Maintenance Included  · No Security Deposit Required
+            $350/week · Insurance Included · Unlimited Miles · Maintenance Included
           </p>
 
           {/* Booking bar (desktop only) */}
@@ -84,14 +84,14 @@ export default function HomePage() {
               desc: "Must be 21+ with a current, valid driver’s license.",
             },
             {
-              icon: "🛡️",
-              title: "Liability Insurance",
-              desc: "Proof of active personal insurance policy is required.",
+              icon: "💳",
+              title: "First Week + $100 Deposit",
+              desc: "Simple and upfront. No hidden fees, no surprises.",
             },
             {
               icon: "✅",
               title: "That's It!",
-              desc: "Simple, fast process. No deposits or hidden fees — just book and go.",
+              desc: "Fast approval. Book today, start earning today.",
             },
           ].map(({ icon, title, desc }, idx) => (
             <div
@@ -154,10 +154,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Drivers Choose Us Section - moved here */}
+      {/* Why Drivers Choose Us Section */}
       <section className="section bg-gray-50 dark:bg-slate-800">
         <h2 className="text-2xl font-semibold text-center mb-6">Why Drivers Choose Us</h2>
-        <div className="max-w-3xl mx-auto grid md:grid-cols-3 gap-6 text-center">
+        <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 text-center">
           {[
             {
               icon: "🚗",
@@ -165,14 +165,29 @@ export default function HomePage() {
               desc: "Get approved and on the road in less than 24 hours. No credit check required.",
             },
             {
-              icon: "🛠️",
-              title: "Maintenance Included",
-              desc: "We cover oil changes, inspections, and tire rotations.",
+              icon: "🛡️",
+              title: "Insurance Included",
+              desc: "State-required liability coverage included with every rental.",
             },
             {
-              icon: "✅",
+              icon: "📝",
+              title: "Uber-Ready",
+              desc: "Uber inspection forms included and ready to upload to your account.",
+            },
+            {
+              icon: "🛠️",
+              title: "Maintenance Included",
+              desc: "Oil changes, inspections, and tire rotations are covered.",
+            },
+            {
+              icon: "♾️",
               title: "Unlimited Mileage",
-              desc: "Drive as much as you need. No surprise fees or per-mile charges.",
+              desc: "Drive as much as you need. No per-mile fees.",
+            },
+            {
+              icon: "⚡",
+              title: "Built for Gig Drivers",
+              desc: "Simple terms made for Uber, Lyft, and delivery drivers.",
             },
           ].map(({ icon, title, desc }, i) => (
             <div
@@ -202,11 +217,13 @@ export default function HomePage() {
                 author: "— Jerome H.",
               },
               {
-                review: "Got approved same day and started working that night. Highly recommend!",
+                review:
+                  "Got approved same day and started working that night. Highly recommend!",
                 author: "— Alicia M.",
               },
               {
-                review: "Unlimited miles was huge for me as a DoorDash driver. Great experience!",
+                review:
+                  "Unlimited miles was huge for me as a DoorDash driver. Great experience!",
                 author: "— Bryan L.",
               },
             ].map((r, idx) => (

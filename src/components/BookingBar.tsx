@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
@@ -23,30 +23,23 @@ const BUCKET = "Insurance_Licenses";
 export default function BookingBar() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const [pickup, setPickup] = useState("");
-  const [dropoff, setDropoff] = useState("");
-  const [vehicleClass, setVehicleClass] = useState("");
-  const [vehicle, setVehicle] = useState("");
-  const [step, setStep] = useState<"quote" | "book" | "verify">("quote");
+  // Single-step form now
+  const [step, setStep] = useState<"form" | "verify">("form");
 
-  const [name, setName] = useState("");
+  // Contact info
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+
+  // Files
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
-  const [insuranceFile, setInsuranceFile] = useState<File | null>(null);
+  const [profileFile, setProfileFile] = useState<File | null>(null); // rideshare profile
   const [licenseUrl, setLicenseUrl] = useState<string | null>(null);
-  const [insuranceUrl, setInsuranceUrl] = useState<string | null>(null);
+  const [profileUrl, setProfileUrl] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(null);
-
-  const vehicleOptions: Record<string, string[]> = {
-    Sedan: ["2020 Toyota Camry", "2017 Hyundai Sonata", "2014 Ford Fusion"],
-    SUV: ["2017 Toyota RAV4", "2017 Honda CR-V", "2019 Hyundai Santa Fe"],
-    "3-Row SUV": ["2019 Chevy Suburban", "2020 Toyota Sienna", "2022 Chrysler Pacifica"],
-  };
-
-  const rates: Record<string, number> = { Sedan: 50, SUV: 60, "3-Row SUV": 70 };
 
   // Debug once on mount
   useEffect(() => {
@@ -58,29 +51,6 @@ export default function BookingBar() {
     console.log("NEXT_PUBLIC_SUPABASE_ANON_KEY exists:", !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
   }, []);
 
-  const days = useMemo(() => {
-    if (!pickup || !dropoff) return 0;
-    const diff = Math.ceil(
-      (new Date(dropoff).getTime() - new Date(pickup).getTime()) / (1000 * 60 * 60 * 24)
-    );
-    return diff > 0 ? diff : 0;
-  }, [pickup, dropoff]);
-
-  const quote = useMemo(() => {
-    if (!vehicleClass || !days) return 0;
-    return (rates[vehicleClass] ?? 0) * days;
-  }, [vehicleClass, days]);
-
-  function canQuote() {
-    return Boolean(pickup && dropoff && vehicleClass && vehicle && days > 0);
-  }
-
-  function goToBook() {
-    if (!canQuote()) return;
-    setStep("book");
-    setStatus(null);
-  }
-
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
@@ -89,23 +59,23 @@ export default function BookingBar() {
     console.log("🟢 SUBMIT START");
 
     try {
+      const fullName = `${firstName} ${lastName}`.trim();
+
       // Prepare payload (before uploads for visibility)
       const basePayload = {
-        name,
-        email, // <- your template uses {{email}} for the "To" field
+        name: fullName,
+        first_name: firstName,
+        last_name: lastName,
+        email, // your template likely uses {{email}} for the "To" field
         phone,
-        vehicle: vehicle || vehicleClass,
-        pickup_date: pickup,
-        dropoff_date: dropoff,
-        days: String(days),
-        quote: String(quote),
-        license_url: "",   // will fill if uploaded
-        insurance_url: "", // will fill if uploaded
+        // keep keys for compatibility with existing EmailJS template
+        license_url: "",
+        insurance_url: "", // will store rideshare profile URL
       };
       console.log("📦 Base payload:", basePayload);
 
-      // Uploads (optional)
       const supabase = getSupabase();
+
       async function uploadFile(file: File, prefix: string) {
         if (!supabase) {
           console.warn(`⏭️ Skipping ${prefix} upload (no Supabase).`);
@@ -125,15 +95,16 @@ export default function BookingBar() {
       }
 
       const licenseLink = licenseFile ? await uploadFile(licenseFile, "license") : "";
-      const insuranceLink = insuranceFile ? await uploadFile(insuranceFile, "insurance") : "";
+      const profileLink = profileFile ? await uploadFile(profileFile, "profile") : "";
 
       setLicenseUrl(licenseLink || null);
-      setInsuranceUrl(insuranceLink || null);
+      setProfileUrl(profileLink || null);
 
       const payload = {
         ...basePayload,
         license_url: licenseLink,
-        insurance_url: insuranceLink,
+        // rideshare profile screenshot goes into insurance_url for template compatibility
+        insurance_url: profileLink,
       };
 
       console.log("✉️ Sending EmailJS with payload:", payload);
@@ -146,11 +117,11 @@ export default function BookingBar() {
 
       console.log("✅ EmailJS response:", res); // { status, text }
 
-      setStatus({ ok: true, msg: "Booking submitted successfully!" });
+      setStatus({ ok: true, msg: "Submitted successfully!" });
       setStep("verify");
     } catch (err) {
-      console.error("❌ Booking failed:", err);
-      setStatus({ ok: false, msg: "Error submitting booking." });
+      console.error("❌ Submit failed:", err);
+      setStatus({ ok: false, msg: "Error submitting. Please try again." });
     } finally {
       setSubmitting(false);
       console.log("🔚 SUBMIT END");
@@ -159,87 +130,27 @@ export default function BookingBar() {
 
   return (
     <div className="w-full bg-white dark:bg-slate-800 shadow-md border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-4 text-gray-900 dark:text-gray-100">
-      {/* Step 1: Quote */}
-      {step === "quote" && (
-        <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-stretch">
-          <div className="flex flex-col flex-1 min-w-[180px]">
-            <label className="text-sm font-medium">Pick-up Date</label>
-            <input
-              type="date"
-              value={pickup}
-              onChange={(e) => setPickup(e.target.value)}
-              className="border rounded-md px-3 py-2 text-sm w-full h-10 bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-            />
-          </div>
-          <div className="flex flex-col flex-1 min-w-[180px]">
-            <label className="text-sm font-medium">Drop-off Date</label>
-            <input
-              type="date"
-              value={dropoff}
-              onChange={(e) => setDropoff(e.target.value)}
-              className="border rounded-md px-3 py-2 text-sm w-full h-10 bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-            />
-          </div>
-          <div className="flex flex-col flex-1 min-w-[180px]">
-            <label className="text-sm font-medium">Vehicle Class</label>
-            <select
-              value={vehicleClass}
-              onChange={(e) => {
-                setVehicleClass(e.target.value);
-                setVehicle("");
-              }}
-              className="border rounded-md px-3 py-2 text-sm w-full h-10 bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-            >
-              <option value="">Choose Class</option>
-              {Object.keys(vehicleOptions).map((cls) => (
-                <option key={cls} value={cls}>
-                  {cls}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex flex-col flex-1 min-w-[180px]">
-            <label className="text-sm font-medium">Vehicle</label>
-            <select
-              value={vehicle}
-              onChange={(e) => setVehicle(e.target.value)}
-              disabled={!vehicleClass}
-              className="border rounded-md px-3 py-2 text-sm w-full h-10 bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-            >
-              <option value="">Choose Vehicle</option>
-              {vehicleClass &&
-                vehicleOptions[vehicleClass]?.map((v) => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <button
-            onClick={goToBook}
-            disabled={!canQuote()}
-            className="bg-blue-600 disabled:opacity-50 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium mt-2 md:mt-0 h-10"
-          >
-            Get Instant Quote
-          </button>
-        </div>
-      )}
-
-      {/* Step 2: Booking Form */}
-      {step === "book" && (
+      {/* Step 1: Simple Intake Form */}
+      {step === "form" && (
         <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-4">
-          <p className="text-xl font-bold text-green-700 dark:text-green-400">
-            ✅ Quote: ${quote} for {days} days
-          </p>
-
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-          />
+          <div className="flex flex-col md:flex-row gap-3">
+            <input
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              className="flex-1 border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+              className="flex-1 border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+            />
+          </div>
 
           <input
             type="email"
@@ -259,7 +170,7 @@ export default function BookingBar() {
             className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
 
-          {/* Upload license (optional) */}
+          {/* Upload license */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
             <span className="text-3xl">🪪</span>
             <span className="text-sm font-medium">Upload Driver’s License</span>
@@ -282,25 +193,25 @@ export default function BookingBar() {
             )}
           </label>
 
-          {/* Upload insurance (optional) */}
+          {/* Upload rideshare profile */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
-            <span className="text-3xl">🛡️</span>
-            <span className="text-sm font-medium">Upload Proof of Insurance</span>
+            <span className="text-3xl">📱</span>
+            <span className="text-sm font-medium">Upload Rideshare Profile (Uber/Lyft)</span>
             <input
               type="file"
-              onChange={(e) => setInsuranceFile(e.target.files?.[0] || null)}
+              onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
               accept="image/*,application/pdf"
               className="hidden"
             />
-            {insuranceFile && <span className="mt-1 text-xs">{insuranceFile.name}</span>}
-            {insuranceUrl && (
+            {profileFile && <span className="mt-1 text-xs">{profileFile.name}</span>}
+            {profileUrl && (
               <a
-                href={insuranceUrl}
+                href={profileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 underline text-xs"
               >
-                View Insurance
+                View Rideshare Profile
               </a>
             )}
           </label>
@@ -310,7 +221,7 @@ export default function BookingBar() {
             disabled={submitting}
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm font-medium"
           >
-            {submitting ? "Submitting..." : "Confirm Booking"}
+            {submitting ? "Submitting..." : "Submit Info"}
           </button>
 
           {status && (
@@ -327,10 +238,10 @@ export default function BookingBar() {
         </form>
       )}
 
-      {/* Step 3: Confirmation */}
+      {/* Step 2: Confirmation */}
       {step === "verify" && (
         <div className="text-center text-green-700 dark:text-green-400 font-medium">
-          🎉 Thank you! We’ve received your request and will reach out shortly with pickup details.
+          🎉 Thank you! We’ve received your info and will reach out shortly with next steps.
         </div>
       )}
     </div>
