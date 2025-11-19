@@ -11,12 +11,21 @@ export default function Header() {
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          {/* Logo */}
           <Link href="/" className="text-xl font-bold text-gray-900">
             Ashmaig Auto Rentals
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 relative">
+
+            <Link
+              href="/"
+              className="font-medium text-gray-700 hover:text-blue-600"
+            >
+              Home
+            </Link>
+
             <Link
               href="/about"
               className="font-medium text-gray-700 hover:text-blue-600"
@@ -54,6 +63,15 @@ export default function Header() {
       {menuOpen && (
         <div className="md:hidden bg-white shadow-lg border-t">
           <div className="flex flex-col space-y-2 p-4">
+
+            <Link
+              href="/"
+              className="block text-gray-700 hover:text-blue-600"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+
             <Link
               href="/about"
               className="block text-gray-700 hover:text-blue-600"
