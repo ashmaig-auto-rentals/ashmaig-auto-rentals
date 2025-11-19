@@ -55,13 +55,17 @@ export default function HomePage() {
                 $350/week
               </div>
 
-              {/* One-line feature text */}
-              <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl whitespace-nowrap">
-                Insurance & Maintenance Included · Unlimited Miles
+              {/* One-line feature text (allow wrapping on mobile) */}
+              <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
+                Insurance & Maintenance Included 
               </p>
 
-              {/* One-line feature text */}
-              <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl whitespace-nowrap">
+              <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
+                Unlimited Mileage
+              </p>
+
+              {/* One-line feature text (allow wrapping on mobile) */}
+              <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
                 Uber & Lyft Ready
               </p>
 
@@ -71,7 +75,7 @@ export default function HomePage() {
             {/* Right: Booking / Upload Card */}
             <div className="w-full flex justify-center lg:justify-end">
               <div className="w-full max-w-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/60 dark:border-slate-700 p-4 sm:p-5">
-                <h2 className="text-lg font-semibold mb-1 text-gray-900 dark:text-gray-100">
+                <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100 text-center sm:text-left">
                   Apply to Get a Car
                 </h2>
                 <BookingBar />
