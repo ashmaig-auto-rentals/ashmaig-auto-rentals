@@ -81,13 +81,13 @@ export default function AboutPage() {
       <section className="bg-blue-600 text-white py-12 text-center">
         <h2 className="text-3xl font-bold">Ready to Rent With Us?</h2>
         <p className="mt-3 text-lg">
-          Explore our fleet and find the perfect car for your needs.
+          Call or text us and we&apos;ll help you get into a car that fits your needs.
         </p>
         <Link
-          href="/fleet"
+          href="tel:+16237772376"
           className="mt-6 inline-block bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-gray-200"
         >
-          🚗 View Fleet
+          📞 Call or Text (623) 777-2376
         </Link>
       </section>
     </main>
