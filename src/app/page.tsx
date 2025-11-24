@@ -52,7 +52,7 @@ export default function HomePage() {
 
               {/* Price badge */}
               <div className="mt-4 inline-block bg-green-600 text-white text-lg md:text-xl font-bold px-4 py-1.5 rounded-full shadow-lg">
-                $350/week
+                $300/week
               </div>
 
               {/* One-line feature text (allow wrapping on mobile) */}
@@ -89,7 +89,7 @@ export default function HomePage() {
       <section className="bg-blue-600 text-white py-12 text-center">
         <h2 className="text-3xl font-bold">Start Earning with a Reliable Work Car</h2>
         <p className="mt-3 text-lg">
-          Rentals from $350/week. Same-day approval and pickup.
+          Rentals from $300/week. Same-day approval and pickup.
         </p>
         <a
           href="tel:6237772376"
