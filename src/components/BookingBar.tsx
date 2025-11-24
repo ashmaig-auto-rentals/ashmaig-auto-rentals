@@ -117,6 +117,22 @@ export default function BookingBar() {
 
       console.log("✅ EmailJS response:", res); // { status, text }
 
+      // 🔵 NEW: Fire Meta Conversions API Lead via server route
+      try {
+        await fetch("/api/apply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            phone,
+          }),
+        });
+      } catch (metaErr) {
+        console.error("⚠️ Meta CAPI call failed (but form still submitted):", metaErr);
+      }
+
       setStatus({ ok: true, msg: "Submitted successfully!" });
       setStep("verify");
     } catch (err) {
