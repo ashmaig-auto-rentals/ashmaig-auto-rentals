@@ -69,6 +69,11 @@ export default function HomePage() {
                 Uber & Lyft Ready
               </p>
 
+                {/* One-line feature text (allow wrapping on mobile) */}
+              <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
+                No Deposit Required
+              </p>
+
               <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-gray-200/90" />
             </div>
 
@@ -113,8 +118,8 @@ export default function HomePage() {
             },
             {
               icon: "💳",
-              title: "First Week + $100 Deposit",
-              desc: "Simple, upfront pricing with no hidden junk fees.",
+              title: "First Week's Rent ($300)",
+              desc: "Simple, upfront pricing with no deposits or hidden fees.",
             },
             {
               icon: "✅",
