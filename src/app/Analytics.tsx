@@ -1,16 +1,14 @@
 "use client";
 
 import Script from "next/script";
-import { FB_PIXEL_ID } from "@/lib/fbpixel";
+
+const FB_PIXEL_ID = "1789341548442036"; // your new pixel
 
 export default function Analytics() {
-  if (!FB_PIXEL_ID) return null;
-
   return (
     <>
-      {/* Pixel Base Code */}
       <Script
-        id="meta-pixel-base"
+        id="fb-pixel"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
@@ -23,16 +21,8 @@ export default function Analytics() {
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '${FB_PIXEL_ID}');
+            fbq('track', 'PageView');
           `,
-        }}
-      />
-
-      {/* Track PageView */}
-      <Script
-        id="meta-pageview"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `fbq('track', 'PageView');`,
         }}
       />
 
