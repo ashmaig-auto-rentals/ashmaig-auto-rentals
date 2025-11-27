@@ -1,7 +1,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Footer from "@/components/Footer";
 import HeaderClientWrapper from "../components/HeaderClientWrapper";
+import Analytics from "./Analytics";
 
 export const metadata: Metadata = {
   title:
@@ -42,18 +44,24 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-        {/* ✅ Interactive Header */}
+        {/* 🔍 Meta Pixel / Analytics */}
+        <Analytics />
+
+        {/* Header */}
         <HeaderClientWrapper />
 
+        {/* Main Content */}
         <main className="flex-1">{children}</main>
+
+        {/* Footer */}
         <Footer />
 
-        {/* SEO structured data */}
+        {/* SEO Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
