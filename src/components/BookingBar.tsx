@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { fbq } from "@/lib/fbpixel"; // ✅ import fbq
 
 // ---- Supabase (graceful: uploads disabled if envs missing) ----
 let _supabase: SupabaseClient | null = null;
@@ -117,9 +118,9 @@ export default function BookingBar() {
 
       console.log("✅ EmailJS response:", res); // { status, text }
 
-      // 🔵 NEW: Fire Meta Conversions API Lead via server route
+      // 🔵 NEW: Call Meta Conversions API server route + fire browser SubmitApplication
       try {
-        await fetch("/api/apply", {
+        const capiRes = await fetch("/api/submit-application", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -127,10 +128,28 @@ export default function BookingBar() {
             lastName,
             email,
             phone,
+            eventSourceUrl:
+              typeof window !== "undefined" ? window.location.href : undefined,
           }),
         });
+
+        const capiJson = await capiRes.json().catch(() => null);
+        console.log("📡 CAPI response:", capiRes.status, capiJson);
+
+        // If server returned an eventId, fire browser SubmitApplication with dedupe
+        if (capiJson?.eventId) {
+          fbq("track", "SubmitApplication", {}, { eventID: capiJson.eventId });
+        } else {
+          // fallback: at least fire browser event (no dedupe)
+          fbq("track", "SubmitApplication");
+        }
       } catch (metaErr) {
-        console.error("⚠️ Meta CAPI call failed (but form still submitted):", metaErr);
+        console.error(
+          "⚠️ Meta CAPI call failed (but form + email still submitted):",
+          metaErr
+        );
+        // still fire a plain browser event so you at least get some tracking
+        fbq("track", "SubmitApplication");
       }
 
       setStatus({ ok: true, msg: "Submitted successfully!" });
