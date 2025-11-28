@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
+import BookingBar from "../../components/BookingBar";
 
 export default function ContactPage() {
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -19,8 +20,8 @@ export default function ContactPage() {
 
     try {
       const res = await emailjs.sendForm(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,   // Service ID
-        "template_x244pjl",                            // Template ID
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        "template_x244pjl",
         formRef.current,
         { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY! }
       );
@@ -38,7 +39,7 @@ export default function ContactPage() {
         });
       }
     } catch (err: any) {
-      console.error("❌ EmailJS error:", err?.text || err?.message || err);
+      console.error("❌ EmailJS error:", err);
       setStatus({
         ok: false,
         msg: "⚠️ Error sending message. Try again.",
@@ -54,7 +55,8 @@ export default function ContactPage() {
         Contact Us
       </h1>
       <p className="mb-10 text-gray-700 dark:text-gray-300 text-lg">
-        We’d love to hear from you. Reach out directly or send us a message using the form below.
+        We’d love to hear from you. Reach out directly or send us a message
+        using the form below.
       </p>
 
       {/* Contact Cards */}
@@ -89,12 +91,11 @@ export default function ContactPage() {
       </div>
 
       {/* Contact Form */}
-      <div className="p-6 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-lg shadow-md">
+      <div className="p-6 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-lg shadow-md mb-12">
         <h3 className="text-xl font-medium mb-4 text-center dark:text-white">
           Or Send Us a Message
         </h3>
         <form ref={formRef} onSubmit={onSubmit} className="space-y-4">
-          {/* Name */}
           <div>
             <label className="block text-sm font-medium dark:text-gray-200">
               Name
@@ -107,7 +108,6 @@ export default function ContactPage() {
             />
           </div>
 
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium dark:text-gray-200">
               Email
@@ -120,7 +120,6 @@ export default function ContactPage() {
             />
           </div>
 
-          {/* Phone (optional) */}
           <div>
             <label className="block text-sm font-medium dark:text-gray-200">
               Phone (optional)
@@ -132,7 +131,6 @@ export default function ContactPage() {
             />
           </div>
 
-          {/* Message */}
           <div>
             <label className="block text-sm font-medium dark:text-gray-200">
               Message
@@ -145,7 +143,6 @@ export default function ContactPage() {
             />
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={submitting}
@@ -154,7 +151,6 @@ export default function ContactPage() {
             {submitting ? "Sending..." : "Send Message"}
           </button>
 
-          {/* Status */}
           {status && (
             <p
               className={`mt-2 text-center ${
@@ -167,6 +163,15 @@ export default function ContactPage() {
             </p>
           )}
         </form>
+      </div>
+
+      {/* Booking Form */}
+      <div className="p-6 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-lg shadow-md">
+        <h3 className="text-xl font-bold mb-4 text-center dark:text-white">
+          Ready to Book? Apply Below
+        </h3>
+
+        <BookingBar />
       </div>
     </div>
   );

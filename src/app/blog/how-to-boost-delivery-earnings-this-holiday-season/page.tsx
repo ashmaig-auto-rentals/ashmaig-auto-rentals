@@ -1,17 +1,73 @@
 // app/blog/how-to-boost-delivery-earnings-this-holiday-season/page.tsx
-// or pages/blog/how-to-boost-delivery-earnings-this-holiday-season.tsx
 
 import Link from "next/link";
 
 export const metadata = {
-  title: "How to Boost Delivery Earnings This Holiday Season in Phoenix | Ashmaig Auto Rentals",
+  title:
+    "How to Boost Delivery Earnings This Holiday Season in Phoenix | Ashmaig Auto Rentals",
   description:
-    "Learn how Phoenix rideshare and delivery drivers can maximize their earnings during Black Friday and Christmas week with the right strategy and a fuel-efficient rental from Ashmaig Auto Rentals.",
+    "Learn how Phoenix rideshare and delivery drivers can maximize their earnings during Black Friday, Christmas, and New Year with the right strategy and a fuel-efficient rental from Ashmaig Auto Rentals.",
+  alternates: {
+    canonical:
+      "https://ashmaig.com/blog/how-to-boost-delivery-earnings-this-holiday-season",
+  },
+  openGraph: {
+    title:
+      "How to Boost Delivery Earnings This Holiday Season in Phoenix | Ashmaig Auto Rentals",
+    description:
+      "Step-by-step strategies for Phoenix Uber, Lyft, DoorDash, Instacart, and other delivery drivers to earn more during the holiday rush using fuel-efficient rentals.",
+    type: "article",
+    url: "https://ashmaig.com/blog/how-to-boost-delivery-earnings-this-holiday-season",
+    siteName: "Ashmaig Auto Rentals",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "How to Boost Delivery Earnings This Holiday Season in Phoenix | Ashmaig Auto Rentals",
+    description:
+      "Holiday earnings guide for Phoenix rideshare and delivery drivers using fuel-efficient rental cars.",
+  },
 };
 
 export default function HolidayEarningsBlogPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline:
+      "How to Boost Delivery Earnings This Holiday Season in Phoenix",
+    description:
+      "A practical guide for Phoenix rideshare and delivery drivers to maximize holiday earnings with the right hours, zones, and a fuel-efficient rental from Ashmaig Auto Rentals.",
+    author: {
+      "@type": "Organization",
+      name: "Ashmaig Auto Rentals",
+      url: "https://ashmaig.com",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Ashmaig Auto Rentals",
+      url: "https://ashmaig.com",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://ashmaig.com/android-chrome-512x512.png", // update if you have a different logo path
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id":
+        "https://ashmaig.com/blog/how-to-boost-delivery-earnings-this-holiday-season",
+    },
+    inLanguage: "en-US",
+    articleSection: "Rideshare & Delivery Tips",
+  };
+
   return (
     <main className="bg-white text-gray-900 dark:bg-slate-900 dark:text-gray-100">
+      {/* SEO: Structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         {/* Breadcrumbs */}
         <nav className="mb-6 text-sm text-gray-500 dark:text-gray-400">
@@ -53,21 +109,31 @@ export default function HolidayEarningsBlogPage() {
         <div className="mb-10 rounded-2xl border border-gray-200/70 dark:border-slate-700/70 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 p-5 sm:p-7">
           <p className="text-base sm:text-lg leading-relaxed">
             Black Friday, Christmas Week, and New Year&apos;s are some of the{" "}
-            <span className="font-semibold">biggest money-making weeks</span> of the year
-            for delivery and rideshare drivers. Whether you&apos;re on{" "}
+            <span className="font-semibold">biggest money-making weeks</span>{" "}
+            of the year for delivery and rideshare drivers. Whether you&apos;re
+            on{" "}
             <span className="font-semibold">
               Uber, Lyft, DoorDash, Instacart, Grubhub, Amazon Flex
             </span>{" "}
-            or any other app, demand and bonuses often spike in Phoenix during the
-            holidays.
+            or any other app, demand and bonuses often spike in Phoenix during
+            the holidays.
           </p>
           <p className="mt-4 text-base sm:text-lg leading-relaxed">
-            In this guide, we&apos;ll show you how to maximize those earnings — especially
-            if you&apos;re driving a{" "}
+            In this guide, we&apos;ll show you how to maximize those earnings —
+            especially if you&apos;re driving a{" "}
             <span className="font-semibold">
               fuel-efficient rental car from Ashmaig Auto Rentals
             </span>{" "}
-            with unlimited mileage, insurance, and maintenance included.
+            with unlimited mileage, insurance, and maintenance included. If
+            you&apos;re looking for{" "}
+            <Link
+              href="/"
+              className="font-semibold text-blue-700 dark:text-blue-300 underline-offset-2 hover:underline"
+            >
+              Phoenix rideshare and delivery car rentals
+            </Link>
+            , this article will help you squeeze the most profit out of every
+            shift.
           </p>
         </div>
 
@@ -77,55 +143,73 @@ export default function HolidayEarningsBlogPage() {
             1. Choose a Fuel-Efficient Car to Keep More of Your Earnings
           </h2>
           <p>
-            During the holidays, you&apos;ll likely be driving long hours across Phoenix,
-            Glendale, Tempe, and the West Valley. The more you drive, the more gas you
-            burn — and the more your costs can eat into your earnings.
+            During the holidays, you&apos;ll likely be driving long hours across
+            Phoenix, Glendale, Tempe, and the West Valley. The more you drive,
+            the more gas you burn — and the more your costs can eat into your
+            earnings.
           </p>
           <p>
             That&apos;s why a{" "}
-            <span className="font-semibold">reliable, fuel-efficient sedan or hybrid</span>{" "}
-            is one of the biggest keys to profit. Instead of paying for a big SUV that
-            drinks fuel, choose something like:
+            <span className="font-semibold">
+              reliable, fuel-efficient sedan or hybrid
+            </span>{" "}
+            is one of the biggest keys to profit. Instead of paying for a big
+            SUV that drinks fuel, choose something like:
           </p>
           <ul>
             <li>Toyota Prius – perfect for all-day delivery with great MPG</li>
-            <li>Ford Fusion – comfortable and efficient for mixed rideshare + delivery</li>
-            <li>Toyota Camry – balance of comfort, reliability, and fuel economy</li>
+            <li>
+              Ford Fusion – comfortable and efficient for mixed rideshare +
+              delivery
+            </li>
+            <li>
+              Toyota Camry – balance of comfort, reliability, and fuel economy
+            </li>
           </ul>
           <p>
-            At <span className="font-semibold">Ashmaig Auto Rentals</span>, our cars are
-            set up for rideshare and delivery drivers with:
+            At{" "}
+            <Link
+              href="/"
+              className="font-semibold text-blue-700 dark:text-blue-300 underline-offset-2 hover:underline"
+            >
+              Ashmaig Auto Rentals in Phoenix
+            </Link>
+            , our cars are set up for rideshare and delivery drivers with:
           </p>
           <ul>
-            <li>Unlimited mileage – no stress about going &quot;over&quot; a cap</li>
+            <li>Unlimited mileage – no stress about going &quot;over&quot;</li>
             <li>Insurance included – you&apos;re covered while you work</li>
-            <li>Maintenance included – we handle the upkeep; you focus on earnings</li>
+            <li>
+              Maintenance included – we handle the upkeep; you focus on earnings
+            </li>
             <li>Weekly rates designed for Uber, Lyft, and gig drivers</li>
           </ul>
 
           {/* 2. High demand hours */}
           <h2 id="best-times" className="text-2xl font-semibold mt-10 mb-4">
-            2. Work the Highest-Demand Hours (Not Just When It&apos;s Convenient)
+            2. Work the Highest-Demand Hours (Not Just When It&apos;s
+            Convenient)
           </h2>
           <p>
-            The secret to maximizing holiday earnings isn&apos;t just working more — it&apos;s
-            working the <span className="font-semibold">right hours</span>.
+            The secret to maximizing holiday earnings isn&apos;t just working
+            more — it&apos;s working the{" "}
+            <span className="font-semibold">right hours</span>.
           </p>
           <h3 className="text-xl font-semibold mt-6 mb-2">
             Black Friday & Big Shopping Weekends
           </h3>
           <ul>
             <li>
-              <span className="font-semibold">6 AM – 10 AM:</span> Breakfast orders for
-              shoppers and early-morning airport runs
+              <span className="font-semibold">6 AM – 10 AM:</span> Breakfast
+              orders for shoppers and early-morning airport runs
             </li>
             <li>
-              <span className="font-semibold">11 AM – 3 PM:</span> Mid-day mall and outlet
-              trips, plus lunch deliveries
+              <span className="font-semibold">11 AM – 3 PM:</span> Mid-day mall
+              and outlet trips, plus lunch deliveries
             </li>
             <li>
-              <span className="font-semibold">5 PM – 10 PM:</span> Dinner rush + retail
-              pickups and drop-offs
+              <span className="font-semibold">5 PM – 10 PM:</span> Dinner rush +
+              retail pickups and drop-offs
             </li>
           </ul>
           <h3 className="text-xl font-semibold mt-6 mb-2">
@@ -133,23 +217,23 @@ export default function HolidayEarningsBlogPage() {
           </h3>
           <ul>
             <li>
-              <span className="font-semibold">December 20–24:</span> Last-minute gift
-              shopping, grocery runs, and restaurant orders
+              <span className="font-semibold">December 20–24:</span> Last-minute
+              gift shopping, grocery runs, and restaurant orders
             </li>
             <li>
-              <span className="font-semibold">10 AM – 2 PM:</span> Grocery and retail peak
-              window
+              <span className="font-semibold">10 AM – 2 PM:</span> Grocery and
+              retail peak window
             </li>
             <li>
-              <span className="font-semibold">5 PM – 9 PM:</span> Dinner + &quot;we forgot
-              this&quot; grocery orders
+              <span className="font-semibold">5 PM – 9 PM:</span> Dinner +
+              &quot;we forgot this&quot; grocery orders
             </li>
           </ul>
           <p>
-            When you&apos;re in a rental from Ashmaig Auto Rentals, you can plan your
-            schedule around these windows knowing your{" "}
-            <span className="font-semibold">car is ready for long shifts</span> and
-            unlimited miles.
+            When you&apos;re in a rental from Ashmaig Auto Rentals, you can plan
+            your schedule around these windows knowing your{" "}
+            <span className="font-semibold">car is ready for long shifts</span>{" "}
+            and unlimited miles.
           </p>
 
           {/* 3. Hot zones */}
@@ -158,35 +242,42 @@ export default function HolidayEarningsBlogPage() {
           </h2>
           <p>
             Where you park between orders matters a lot. You want to sit near{" "}
-            <span className="font-semibold">high-density food, retail, and grocery areas</span>{" "}
+            <span className="font-semibold">
+              high-density food, retail, and grocery areas
+            </span>{" "}
             so you&apos;re the closest driver when orders pop up.
           </p>
           <p>Some strong holiday zones around the Phoenix area include:</p>
           <ul>
             <li>
-              <span className="font-semibold">Downtown Phoenix:</span> Offices, restaurants,
-              and events
+              <span className="font-semibold">Downtown Phoenix:</span> Offices,
+              restaurants, and events
             </li>
             <li>
-              <span className="font-semibold">Tempe / ASU:</span> Students ordering food
-              late and shopping nearby
+              <span className="font-semibold">Tempe / ASU:</span> Students
+              ordering food late and shopping nearby
             </li>
             <li>
-              <span className="font-semibold">Scottsdale Fashion Square & Old Town:</span>{" "}
+              <span className="font-semibold">
+                Scottsdale Fashion Square & Old Town:
+              </span>{" "}
               Shopping, nightlife, and restaurant trips
             </li>
             <li>
-              <span className="font-semibold">Westgate / Glendale:</span> Entertainment,
-              games, and events that spike demand
+              <span className="font-semibold">Westgate / Glendale:</span>{" "}
+              Entertainment, games, and events that spike demand
             </li>
             <li>
-              <span className="font-semibold">High-density grocery corridors:</span> Fry&apos;s,
-              Costco, Walmart, Sam&apos;s Club, and Target locations
+              <span className="font-semibold">
+                High-density grocery corridors:
+              </span>{" "}
+              Fry&apos;s, Costco, Walmart, Sam&apos;s Club, and Target locations
             </li>
           </ul>
           <p>
             Use your app&apos;s heatmaps and your own experience to learn{" "}
-            <span className="font-semibold">where orders cluster</span> — then stay close.
+            <span className="font-semibold">where orders cluster</span> — then
+            stay close.
           </p>
 
           {/* 4. Multi-app */}
@@ -194,24 +285,27 @@ export default function HolidayEarningsBlogPage() {
             4. Run Multiple Apps to Stay Busy (Without Burning Out)
           </h2>
           <p>
-            Relying on a single app during holiday season can leave you stuck during slow
-            pockets. Many top earners run{" "}
-            <span className="font-semibold">2–3 apps at the same time</span> and turn off
-            whichever isn&apos;t paying well.
+            Relying on a single app during holiday season can leave you stuck
+            during slow pockets. Many top earners run{" "}
+            <span className="font-semibold">2–3 apps at the same time</span> and
+            turn off whichever isn&apos;t paying well.
           </p>
           <p>Popular combinations include:</p>
           <ul>
             <li>DoorDash + Uber Eats for food delivery</li>
             <li>Instacart + Shipt for grocery-heavy days</li>
             <li>
-              Amazon Flex for blocks + a food app (Uber Eats / DoorDash) during downtime
+              Amazon Flex for blocks + a food app (Uber Eats / DoorDash) during
+              downtime
             </li>
           </ul>
           <p>
-            A dependable, well-maintained rental car from Ashmaig Auto Rentals means you
-            can accept more orders with confidence —{" "}
-            <span className="font-semibold">no stressing about breakdowns</span> or surprise
-            repair bills.
+            A dependable, well-maintained rental car from Ashmaig Auto Rentals
+            means you can accept more orders with confidence —{" "}
+            <span className="font-semibold">
+              no stressing about breakdowns
+            </span>{" "}
+            or surprise repair bills.
           </p>
 
           {/* 5. Organized vehicle */}
@@ -219,31 +313,32 @@ export default function HolidayEarningsBlogPage() {
             5. Set Up Your Car to Be a &quot;Delivery Machine&quot;
           </h2>
           <p>
-            Small changes in your setup can make each shift smoother, faster, and more
-            profitable. Consider:
+            Small changes in your setup can make each shift smoother, faster,
+            and more profitable. Consider:
           </p>
           <ul>
             <li>
-              <span className="font-semibold">Insulated bags:</span> Keep orders hot/cold
-              and avoid complaints
+              <span className="font-semibold">Insulated bags:</span> Keep
+              orders hot/cold and avoid complaints
             </li>
             <li>
-              <span className="font-semibold">Phone mount:</span> For safe navigation and
-              quick access to the apps
+              <span className="font-semibold">Phone mount:</span> For safe
+              navigation and quick access to the apps
             </li>
             <li>
-              <span className="font-semibold">Charging setup:</span> Keep your phone at
-              80%+ so it never dies mid-shift
+              <span className="font-semibold">Charging setup:</span> Keep your
+              phone at 80%+ so it never dies mid-shift
             </li>
             <li>
-              <span className="font-semibold">Trunk organization:</span> Separate space for
-              groceries vs. restaurant bags
+              <span className="font-semibold">Trunk organization:</span>{" "}
+              Separate space for groceries vs. restaurant bags
             </li>
           </ul>
           <p>
-            Because <span className="font-semibold">maintenance is included</span> with our
-            rentals, you can focus on staying organized and efficient, instead of worrying
-            about oil changes and repairs.
+            Because{" "}
+            <span className="font-semibold">maintenance is included</span> with
+            our rentals, you can focus on staying organized and efficient,
+            instead of worrying about oil changes and repairs.
           </p>
 
           {/* 6. Track numbers */}
@@ -251,22 +346,24 @@ export default function HolidayEarningsBlogPage() {
             6. Track Gas, Miles, and Earnings Like a Business
           </h2>
           <p>
-            The holiday season can feel like controlled chaos — high volume, constant
-            pings, and long days. That&apos;s exactly when tracking your numbers matters
-            most.
+            The holiday season can feel like controlled chaos — high volume,
+            constant pings, and long days. That&apos;s exactly when tracking
+            your numbers matters most.
           </p>
           <p>Use apps and tools like:</p>
           <ul>
             <li>Gridwise – to see which times and zones pay the most</li>
             <li>Stride or Everlance – for mileage and deductible tracking</li>
             <li>
-              Simple spreadsheets – to compare your hourly earnings between apps and zones
+              Simple spreadsheets – to compare your hourly earnings between apps
+              and zones
             </li>
           </ul>
           <p>
-            When your <span className="font-semibold">car costs are predictable</span> —
-            like a flat weekly rate with unlimited miles from Ashmaig Auto Rentals — it
-            becomes much easier to understand your real profit.
+            When your{" "}
+            <span className="font-semibold">car costs are predictable</span> —
+            like a flat weekly rate with unlimited miles from Ashmaig Auto
+            Rentals — it becomes much easier to understand your real profit.
           </p>
 
           {/* 7. Use rental flexibility */}
@@ -274,8 +371,8 @@ export default function HolidayEarningsBlogPage() {
             7. Use the Flexibility of a Weekly Rental to Your Advantage
           </h2>
           <p>
-            One of the biggest upsides of renting instead of using your personal car is
-            flexibility. You don&apos;t have to worry about:
+            One of the biggest upsides of renting instead of using your personal
+            car is flexibility. You don&apos;t have to worry about:
           </p>
           <ul>
             <li>Putting 1,000+ holiday miles on your personal vehicle</li>
@@ -283,16 +380,16 @@ export default function HolidayEarningsBlogPage() {
             <li>Insurance headaches or not having the right coverage</li>
           </ul>
           <p>
-            With <span className="font-semibold">Ashmaig Auto Rentals</span>, our Phoenix
-            drivers get:
+            With <span className="font-semibold">Ashmaig Auto Rentals</span>,
+            our Phoenix drivers get:
           </p>
           <ul>
             <li>Unlimited mileage on approved rentals</li>
             <li>Insurance and maintenance included in the weekly rate</li>
             <li>Cars that are ready for Uber, Lyft, and delivery apps</li>
             <li>
-              Flexible weekly structure so you can push hard during peak weeks, then scale
-              back if needed
+              Flexible weekly structure so you can push hard during peak weeks,
+              then scale back if needed
             </li>
           </ul>
 
@@ -302,18 +399,23 @@ export default function HolidayEarningsBlogPage() {
           </h2>
           <p>
             Black Friday, Christmas Week, and New Year&apos;s can be{" "}
-            <span className="font-semibold">the most profitable time of the year</span> for
-            Phoenix delivery and rideshare drivers — if you plan it right. With a smart
-            strategy, the right apps, and a fuel-efficient rental car, you can turn the
-            holiday rush into a serious income boost.
+            <span className="font-semibold">
+              the most profitable time of the year
+            </span>{" "}
+            for Phoenix delivery and rideshare drivers — if you plan it right.
+            With a smart strategy, the right apps, and a fuel-efficient rental
+            car, you can turn the holiday rush into a serious income boost.
           </p>
           <p>
-            If you&apos;re looking for a{" "}
-            <span className="font-semibold">
-              rideshare-ready, delivery-friendly rental car in Phoenix
-            </span>{" "}
-            with unlimited miles and insurance included, Ashmaig Auto Rentals is here to
-            keep you on the road and earning.
+            If you&apos;re looking for{" "}
+            <Link
+              href="/"
+              className="font-semibold text-blue-700 dark:text-blue-300 underline-offset-2 hover:underline"
+            >
+              a rideshare-ready, delivery-friendly rental car in Phoenix
+            </Link>{" "}
+            with unlimited miles and insurance included, Ashmaig Auto Rentals is
+            here to keep you on the road and earning.
           </p>
         </article>
 
@@ -325,8 +427,8 @@ export default function HolidayEarningsBlogPage() {
                 Ready to Maximize Your Holiday Earnings?
               </h3>
               <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200">
-                Reserve a fuel-efficient rental today and hit the road with unlimited
-                mileage, insurance included, and maintenance covered.
+                Reserve a fuel-efficient rental today and hit the road with
+                unlimited mileage, insurance included, and maintenance covered.
               </p>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                 Call or text us at{" "}
@@ -336,7 +438,14 @@ export default function HolidayEarningsBlogPage() {
                 >
                   (623) 777-2376
                 </a>{" "}
-                to get started.
+                to get started, or{" "}
+                <Link
+                  href="/"
+                  className="font-semibold text-blue-700 dark:text-blue-300 underline-offset-2 hover:underline"
+                >
+                  learn more about Ashmaig Auto Rentals
+                </Link>
+                .
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -347,10 +456,10 @@ export default function HolidayEarningsBlogPage() {
                 Book a Rental
               </Link>
               <Link
-                href="/about"
+                href="/blog"
                 className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-100/70 dark:hover:bg-slate-800 transition"
               >
-                Learn More About Ashmaig
+                Read More Driver Tips
               </Link>
             </div>
           </div>
