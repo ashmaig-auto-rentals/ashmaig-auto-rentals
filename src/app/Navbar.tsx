@@ -59,15 +59,16 @@ export default function Header() {
                 >
                   About Us
                 </Link>
-
-                <Link
-                  href="/contact"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Contact Us
-                </Link>
               </div>
             </div>
+
+            {/* Contact Us — moved OUT of dropdown */}
+            <Link
+              href="/contact"
+              className="font-medium text-gray-700 hover:text-blue-600"
+            >
+              Contact Us
+            </Link>
           </nav>
 
           {/* Call Us Button */}
@@ -121,15 +122,16 @@ export default function Header() {
               >
                 About Us
               </Link>
-
-              <Link
-                href="/contact"
-                className="block text-gray-700 hover:text-blue-600"
-                onClick={() => setMenuOpen(false)}
-              >
-                Contact Us
-              </Link>
             </div>
+
+            {/* Contact Us — mobile version */}
+            <Link
+              href="/contact"
+              className="block text-gray-700 hover:text-blue-600"
+              onClick={() => setMenuOpen(false)}
+            >
+              Contact Us
+            </Link>
 
             <a
               href="tel:6237772376"
