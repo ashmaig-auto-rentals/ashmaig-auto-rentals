@@ -1,6 +1,5 @@
 // src/app/blog/page.tsx
 import Link from "next/link";
-import { getBlogPosts } from "@/lib/getBlogPosts";
 
 export const metadata = {
   title: "Blog | Ashmaig Auto Rentals",
@@ -8,9 +7,39 @@ export const metadata = {
     "Rideshare rental tips, delivery driver guides, and Phoenix earnings hacks.",
 };
 
-export default function BlogPage() {
-  const posts = getBlogPosts(); // auto-load all blog posts
+// Hard-coded list of blog posts
+const posts = [
+  {
+    slug: "how-to-boost-delivery-earnings-this-holiday-season",
+    title: "How to Boost Delivery Earnings This Holiday Season in Phoenix",
+    date: "November 2025",
+    description:
+      "Step-by-step strategies to maximize your DoorDash, Uber Eats, Instacart, and rideshare earnings during the holiday rush in Phoenix.",
+  },
+  {
+    slug: "why-economy-rentals-are-perfect-for-holiday-delivery-drivers",
+    title: "Why Economy Rentals Are Perfect for Holiday Delivery Drivers",
+    date: "November 2025",
+    description:
+      "Why fuel-efficient rentals like Prius, Camry, and Fusion help Phoenix drivers keep more profit during busy delivery seasons.",
+  },
+  {
+    slug: "best-times-to-drive-in-phoenix-high-demand-hours-guide",
+    title: "Best Times to Drive in Phoenix — High-Demand Hours Guide",
+    date: "November 2025",
+    description:
+      "Learn the best times of day, days of the week, and seasons to be online for maximum rideshare and delivery demand in Phoenix.",
+  },
+  {
+    slug: "top-ways-rideshare-drivers-can-earn-extra-during-holiday-rush",
+    title: "Top Ways Rideshare Drivers Can Earn Extra During the Holiday Rush",
+    date: "November 2025",
+    description:
+      "Upsell strategies, bonus stacking, and smarter scheduling tips for Phoenix Uber and Lyft drivers during peak holiday demand.",
+  },
+];
 
+export default function BlogPage() {
   return (
     <main className="bg-white text-gray-900 dark:bg-slate-900 dark:text-gray-100">
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -23,7 +52,9 @@ export default function BlogPage() {
         </p>
 
         {posts.length === 0 ? (
-          <p className="text-gray-500 mt-8">No blog posts yet — check back soon.</p>
+          <p className="text-gray-500 mt-8">
+            No blog posts yet — check back soon.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post) => (
