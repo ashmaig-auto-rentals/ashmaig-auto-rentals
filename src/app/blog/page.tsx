@@ -4,11 +4,19 @@ import Link from "next/link";
 export const metadata = {
   title: "Blog | Ashmaig Auto Rentals",
   description:
-    "Rideshare rental tips, delivery driver guides, and Phoenix earnings hacks.",
+    "Rideshare rental tips, Uber & Lyft driver guides, and Phoenix earnings hacks.",
 };
 
 // Hard-coded list of blog posts
 const posts = [
+  {
+    slug: "how-to-prepare-your-uber-lyft-rental-for-holiday-traffic-in-phoenix",
+    title:
+      "How to Prepare Your Uber & Lyft Rental Car for Holiday Traffic in Phoenix",
+    date: "November 2025",
+    description:
+      "Step-by-step guide for Uber and Lyft drivers in Phoenix to get their rental car ready for busy holiday traffic, protect ratings, and maximize profits.",
+  },
   {
     slug: "how-to-boost-delivery-earnings-this-holiday-season",
     title: "How to Boost Delivery Earnings This Holiday Season in Phoenix",
