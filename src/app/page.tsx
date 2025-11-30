@@ -5,7 +5,7 @@ import BookingBar from "@/components/BookingBar";
 export default function HomePage() {
   return (
     <main className="bg-white text-gray-900 dark:bg-slate-900 dark:text-gray-100">
-      {/* JSON-LD Structured Data for LocalBusiness */}
+      {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -25,13 +25,11 @@ export default function HomePage() {
               addressCountry: "US",
             },
             openingHours: "Mo-Su 07:00-19:00",
-            description:
-              "Ashmaig Auto Rentals offers work-ready rental cars for rideshare and delivery drivers in Phoenix. Weekly and monthly rental options with insurance, maintenance, and unlimited mileage included, with a simple $100 deposit.",
           }),
         }}
       />
 
-      {/* Hero Section with integrated BookingBar */}
+      {/* HERO SECTION */}
       <section className="relative min-h-[90vh]">
         <Image
           src="/desert-car.jpg"
@@ -44,40 +42,46 @@ export default function HomePage() {
 
         <div className="relative z-10 section flex items-center py-16">
           <div className="w-full grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-center">
-            {/* Left: Hero Text */}
+            {/* LEFT: HERO TEXT */}
             <div className="text-white max-w-3xl">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight">
                 Phoenix Rideshare Rentals for Uber, Lyft & Delivery Drivers
               </h1>
 
-              {/* Price badge */}
-              <div className="mt-4 inline-block bg-green-600 text-white text-lg md:text-xl font-bold px-4 py-1.5 rounded-full shadow-lg">
+              {/* PRICE + CALL BUTTON (MOBILE ONLY) */}
+              <div className="mt-4 flex items-center gap-3 md:hidden">
+                <div className="bg-green-600 text-white text-lg font-bold px-4 py-1.5 rounded-full shadow-lg">
+                  $300/week
+                </div>
+
+                <a
+                  href="tel:6237772376"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-blue-700 transition"
+                >
+                  Call Us
+                </a>
+              </div>
+
+              {/* DESKTOP PRICE BADGE */}
+              <div className="hidden md:inline-block mt-4 bg-green-600 text-white text-lg md:text-xl font-bold px-4 py-1.5 rounded-full shadow-lg">
                 $300/week
               </div>
 
-              {/* One-line feature text (allow wrapping on mobile) */}
               <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
-                Insurance & Maintenance Included 
+                Insurance & Maintenance Included
               </p>
-
               <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
                 Unlimited Mileage
               </p>
-
-              {/* One-line feature text (allow wrapping on mobile) */}
               <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
                 Uber & Lyft Ready
               </p>
-
-                {/* One-line feature text (allow wrapping on mobile) */}
               <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
                 No Deposit Required
               </p>
-
-              <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-gray-200/90" />
             </div>
 
-            {/* Right: Booking / Upload Card */}
+            {/* RIGHT: BOOKING CARD */}
             <div className="w-full flex justify-center lg:justify-end">
               <div className="w-full max-w-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/60 dark:border-slate-700 p-4 sm:p-5">
                 <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100 text-center sm:text-left">
@@ -90,7 +94,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Call to Action Banner */}
+      {/* CTA BANNER */}
       <section className="bg-blue-600 text-white py-12 text-center">
         <h2 className="text-3xl font-bold">Start Earning with a Reliable Work Car</h2>
         <p className="mt-3 text-lg">
@@ -104,28 +108,16 @@ export default function HomePage() {
         </a>
       </section>
 
-      {/* What Do You Need to Rent Section */}
+      {/* REQUIREMENTS */}
       <section className="section bg-gray-50 dark:bg-slate-800">
         <h2 className="text-2xl font-semibold text-center mb-4">
           What Do You Need to Rent?
         </h2>
         <div className="max-w-3xl mx-auto grid md:grid-cols-3 gap-4 text-center">
           {[
-            {
-              icon: "🪪",
-              title: "Valid Driver’s License",
-              desc: "Must be 21+ with a current, valid driver’s license.",
-            },
-            {
-              icon: "💳",
-              title: "First Week's Rent ($300)",
-              desc: "Simple, upfront pricing with no deposits or hidden fees.",
-            },
-            {
-              icon: "✅",
-              title: "That's It",
-              desc: "Fast approval. Upload your info and get matched with a car.",
-            },
+            { icon: "🪪", title: "Valid Driver’s License", desc: "Must be 21+ with a current, valid license." },
+            { icon: "💳", title: "First Week's Rent ($300)", desc: "Simple, upfront pricing. No hidden fees." },
+            { icon: "✅", title: "That's It", desc: "Fast approval and car assignment." },
           ].map(({ icon, title, desc }, idx) => (
             <div
               key={idx}
@@ -139,43 +131,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Drivers Choose Us Section */}
+      {/* WHY CHOOSE US */}
       <section className="section bg-gray-50 dark:bg-slate-800">
         <h2 className="text-2xl font-semibold text-center mb-6">
           Why Drivers Choose Us
         </h2>
         <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 text-center">
           {[
-            {
-              icon: "🚗",
-              title: "Pickup Same Day",
-              desc: "Get approved and on the road in less than 24 hours. No credit check required.",
-            },
-            {
-              icon: "🛡️",
-              title: "Insurance Available",
-              desc: "State-required liability coverage available with every rental.",
-            },
-            {
-              icon: "📝",
-              title: "Uber-Ready",
-              desc: "Uber inspection forms included and ready to upload to your account.",
-            },
-            {
-              icon: "🛠️",
-              title: "Maintenance Included",
-              desc: "Oil changes, inspections, and tire rotations are covered.",
-            },
-            {
-              icon: "♾️",
-              title: "Unlimited Mileage",
-              desc: "Drive as much as you need. No per-mile fees.",
-            },
-            {
-              icon: "⚡",
-              title: "Built for Gig Drivers",
-              desc: "Simple terms designed for Uber, Lyft, and delivery drivers.",
-            },
+            { icon: "🚗", title: "Pickup Same Day", desc: "Get approved and driving in under 24 hours." },
+            { icon: "🛡️", title: "Insurance Available", desc: "State-required liability provided." },
+            { icon: "📝", title: "Uber-Ready", desc: "Uber inspection forms included." },
+            { icon: "🛠️", title: "Maintenance Included", desc: "Oil changes & inspections included." },
+            { icon: "♾️", title: "Unlimited Mileage", desc: "Drive as much as you need." },
+            { icon: "⚡", title: "Built for Gig Drivers", desc: "Perfect for Uber, Lyft & delivery." },
           ].map(({ icon, title, desc }, i) => (
             <div
               key={i}
@@ -189,74 +157,38 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Vehicle Lineup Section */}
+      {/* VEHICLE LINEUP */}
       <section className="section bg-white dark:bg-slate-900">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-semibold text-center mb-2">
             Our Most Popular Vehicle Types
           </h2>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Reliable, fuel-efficient sedans ideal for Uber, Lyft, and delivery driving in Phoenix.
+            Reliable, fuel-efficient sedans ideal for Uber, Lyft, and delivery.
           </p>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {/* Prius */}
-            <div className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm flex flex-col">
-              <div className="relative w-full h-40 md:h-48 mb-4">
-                <Image
-                  src="/cars/prius.png"
-                  alt="Toyota Prius rideshare rental"
-                  fill
-                  className="object-contain"
-                />
+            {[
+              { img: "/cars/prius.png", name: "Toyota Prius" },
+              { img: "/cars/fusion.png", name: "Ford Fusion" },
+              { img: "/cars/camry.png", name: "Toyota Camry" },
+            ].map(({ img, name }, i) => (
+              <div
+                key={i}
+                className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm flex flex-col"
+              >
+                <div className="relative w-full h-40 md:h-48 mb-4">
+                  <Image src={img} alt={name} fill className="object-contain" />
+                </div>
+                <h3 className="text-lg font-semibold text-center">{name}</h3>
               </div>
-              <h3 className="text-lg font-semibold text-center">Toyota Prius</h3>
-            </div>
-
-            {/* Ford Fusion */}
-            <div className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm flex flex-col">
-              <div className="relative w-full h-40 md:h-48 mb-4">
-                <Image
-                  src="/cars/fusion.png"
-                  alt="Ford Fusion rideshare rental"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <h3 className="text-lg font-semibold text-center">Ford Fusion</h3>
-            </div>
-
-            {/* Toyota Camry */}
-            <div className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm flex flex-col">
-              <div className="relative w-full h-40 md:h-48 mb-4">
-                <Image
-                  src="/cars/camry.png"
-                  alt="Toyota Camry rideshare rental"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <h3 className="text-lg font-semibold text-center">Toyota Camry</h3>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Location Map Section */}
-      <section className="section">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Our Location</h2>
-        <div className="w-full h-96">
-          <iframe
-            src="https://www.google.com/maps?q=3750+E+Washington+St,+Phoenix,+AZ&output=embed"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </div>
-      </section>
+      {/* REMOVED MAP SECTION — no more location map */}
+
     </main>
   );
 }
