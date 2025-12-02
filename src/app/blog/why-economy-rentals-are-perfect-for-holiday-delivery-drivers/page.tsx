@@ -1,4 +1,7 @@
+// src/app/blog/why-economy-rentals-are-perfect-for-holiday-delivery-drivers/page.tsx
+
 import Link from "next/link";
+import BookingBar from "@/components/BookingBar";
 
 export const metadata = {
   title:
@@ -58,6 +61,9 @@ export default function EconomyRentalsBlogPage() {
     articleSection: "Fleet & Driver Tips",
   };
 
+  const businessName = "Ashmaig Auto Rentals";
+  const phone = "(623) 777-2376";
+
   return (
     <main className="bg-white text-gray-900 dark:bg-slate-900 dark:text-gray-100">
       {/* SEO: Structured data */}
@@ -91,14 +97,14 @@ export default function EconomyRentalsBlogPage() {
         {/* Header */}
         <header className="mb-8">
           <p className="text-xs uppercase tracking-wide text-blue-600 font-semibold mb-2">
-            Fleet & Driver Tips
+            Fleet &amp; Driver Tips
           </p>
           <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-4">
             Why Economy Rentals Are Perfect for Holiday Delivery Drivers in
             Phoenix
           </h1>
           <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-            <span>By Ashmaig Auto Rentals</span>
+            <span>By {businessName}</span>
             <span>•</span>
             <span>Updated for 2025 Holiday Season</span>
           </div>
@@ -119,7 +125,7 @@ export default function EconomyRentalsBlogPage() {
               href="/"
               className="font-semibold text-green-700 dark:text-green-300 underline-offset-2 hover:underline"
             >
-              economy rental cars from Ashmaig Auto Rentals
+              economy rental cars from {businessName}
             </Link>{" "}
             come in. With fuel-efficient vehicles, unlimited mileage on approved
             rentals, and maintenance included, you can keep more of what you
@@ -144,7 +150,7 @@ export default function EconomyRentalsBlogPage() {
               href="/"
               className="font-semibold text-green-700 dark:text-green-300 underline-offset-2 hover:underline"
             >
-              Ashmaig Auto Rentals in Phoenix
+              {businessName} in Phoenix
             </Link>{" "}
             — you get better MPG, which means fewer trips to the gas station and
             more net profit each week.
@@ -156,14 +162,14 @@ export default function EconomyRentalsBlogPage() {
           </h2>
           <p>
             When you use your personal vehicle, you&apos;re never quite sure
-            when the next big expense is coming: brakes, tires, transmission,
-            or even a major engine repair. Those costs can hit right when
-            you&apos;re trying to stack holiday earnings.
+            when the next big expense is coming: brakes, tires, transmission, or
+            even a major engine repair. Those costs can hit right when you&apos;re
+            trying to stack holiday earnings.
           </p>
           <p>
             With a{" "}
             <span className="font-semibold">
-              flat weekly rental from Ashmaig Auto Rentals
+              flat weekly rental from {businessName}
             </span>
             , your costs are predictable. Insurance and maintenance are included
             on approved rentals, so you know your fixed expense going into every
@@ -179,10 +185,10 @@ export default function EconomyRentalsBlogPage() {
             not making money — and you still have personal bills to pay.
           </p>
           <p>
-            Our fleet is maintained for gig work, so you spend less time
-            dealing with breakdowns and more time driving. Instead of worrying
-            about oil changes, brakes, and check-engine lights, you can simply
-            focus on choosing the right hours and zones to drive.
+            Our fleet is maintained for gig work, so you spend less time dealing
+            with breakdowns and more time driving. Instead of worrying about oil
+            changes, brakes, and check-engine lights, you can simply focus on
+            choosing the right hours and zones to drive.
           </p>
 
           {/* 4. Easier Parking & Navigation */}
@@ -245,15 +251,15 @@ export default function EconomyRentalsBlogPage() {
             Final Thoughts: Economy = Efficiency + Profit
           </h2>
           <p>
-            For Phoenix gig drivers, economy rentals hit the sweet spot:
-            low fuel costs, predictable weekly expenses, easy maneuverability,
-            and less time worrying about repairs. That&apos;s exactly why{" "}
+            For Phoenix gig drivers, economy rentals hit the sweet spot: low
+            fuel costs, predictable weekly expenses, easy maneuverability, and
+            less time worrying about repairs. That&apos;s exactly why{" "}
             <Link
               href="/"
               className="font-semibold text-green-700 dark:text-green-300 underline-offset-2 hover:underline"
             >
-              Ashmaig Auto Rentals focuses on fuel-efficient vehicles for Uber,
-              Lyft, and delivery drivers
+              {businessName} focuses on fuel-efficient vehicles for Uber, Lyft,
+              and delivery drivers
             </Link>
             .
           </p>
@@ -264,48 +270,33 @@ export default function EconomyRentalsBlogPage() {
           </p>
         </article>
 
-        {/* CTA Box */}
+        {/* CTA + Booking (Call Us + Apply Form) */}
         <section className="mt-12 sm:mt-16">
-          <div className="rounded-2xl border border-green-100 dark:border-green-900 bg-green-50/80 dark:bg-slate-800/80 p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 className="text-xl font-semibold mb-2">
-                Ready for a Fuel-Efficient Rental This Holiday?
-              </h3>
-              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200">
-                Rent a fuel-efficient economy car and maximize your delivery and
-                rideshare income with Ashmaig Auto Rentals in Phoenix.
-              </p>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                Call or text us at{" "}
-                <a
-                  href="tel:+16237772376"
-                  className="font-semibold text-green-700 dark:text-green-400 underline-offset-2 hover:underline"
-                >
-                  (623) 777-2376
-                </a>{" "}
-                to get started, or{" "}
-                <Link
-                  href="/"
-                  className="font-semibold text-green-700 dark:text-green-300 underline-offset-2 hover:underline"
-                >
-                  view our Phoenix rideshare rental options
-                </Link>
-                .
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold bg-green-600 text-white hover:bg-green-700 transition"
-              >
-                Book a Rental
-              </Link>
-              <Link
-                href="/blog"
-                className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold border border-green-200 dark:border-green-700 text-green-700 dark:text-green-300 hover:bg-green-100/70 dark:hover:bg-slate-800 transition"
-              >
-                Read More Driver Tips
-              </Link>
+          <div className="rounded-2xl border border-green-100 dark:border-green-900 bg-green-50/80 dark:bg-slate-800/80 p-6 sm:p-8">
+            <h3 className="text-2xl font-semibold mb-3">
+              Ready for a fuel-efficient rental this holiday?
+            </h3>
+            <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 mb-6">
+              Apply for a delivery- and rideshare-ready economy car and hit the
+              road with unlimited miles, insurance included, and maintenance
+              covered. Call or text us — or send your application through the
+              form below.
+            </p>
+
+            {/* Call Us Button */}
+            <a
+              href={`tel:${phone.replace(/[^\d]/g, "")}`}
+              className="mb-6 inline-flex items-center justify-center w-full sm:w-auto rounded-xl px-6 py-3 text-base font-semibold bg-green-600 text-white hover:bg-green-700 transition"
+            >
+              📞 Call Us: {phone}
+            </a>
+
+            {/* Booking / Application Form */}
+            <div className="mt-6 bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+              <h4 className="text-lg font-semibold mb-3">
+                Apply to get a car now
+              </h4>
+              <BookingBar />
             </div>
           </div>
         </section>

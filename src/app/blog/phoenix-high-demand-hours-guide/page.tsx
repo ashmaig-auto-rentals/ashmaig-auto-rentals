@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BookingBar from "@/components/BookingBar";
 
 export const metadata = {
   title:
@@ -186,7 +187,9 @@ export default function HighDemandHoursGuide() {
               Parties, family gatherings, and bar rush.
             </li>
             <li>
-              <span className="font-semibold">Local games, concerts, and festivals:</span>{" "}
+              <span className="font-semibold">
+                Local games, concerts, and festivals:
+              </span>{" "}
               Massive spikes in demand before and after the event for both rides
               and food.
             </li>
@@ -324,48 +327,33 @@ export default function HighDemandHoursGuide() {
           </p>
         </article>
 
-        {/* CTA Box */}
+        {/* CTA — Call Us + Booking Form */}
         <section className="mt-12 sm:mt-16">
-          <div className="rounded-2xl border border-yellow-100 dark:border-yellow-900 bg-yellow-50/80 dark:bg-slate-800/80 p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 className="text-xl font-semibold mb-2">
-                Ready to Drive During Phoenix&apos;s Busiest Hours?
-              </h3>
-              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200">
-                Rent a fuel-efficient, rideshare-ready car from Ashmaig Auto
-                Rentals and make the most of every peak window.
-              </p>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                Call or text{" "}
-                <a
-                  href="tel:+16237772376"
-                  className="font-semibold text-yellow-800 dark:text-yellow-400 underline-offset-2 hover:underline"
-                >
-                  (623) 777-2376
-                </a>{" "}
-                to get started, or{" "}
-                <Link
-                  href="/"
-                  className="font-semibold text-yellow-800 dark:text-yellow-300 underline-offset-2 hover:underline"
-                >
-                  view our Phoenix rideshare rental options
-                </Link>
-                .
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition"
-              >
-                Book a Rental
-              </Link>
-              <Link
-                href="/blog"
-                className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold border border-yellow-200 dark:border-yellow-700 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100/70 dark:hover:bg-slate-800 transition"
-              >
-                Read More Driver Tips
-              </Link>
+          <div className="rounded-2xl border border-yellow-100 dark:border-yellow-900 bg-yellow-50/80 dark:bg-slate-800/80 p-6 sm:p-8">
+            <h3 className="text-2xl font-semibold mb-4">
+              Ready to drive during Phoenix&apos;s busiest hours?
+            </h3>
+
+            <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 mb-6">
+              Apply for a rideshare-ready, fuel-efficient rental and hit the
+              road for Phoenix&apos;s peak demand times. Call or text us — or
+              send your application through the form below.
+            </p>
+
+            {/* CALL US BUTTON */}
+            <a
+              href="tel:+16237772376"
+              className="mb-6 inline-flex items-center justify-center w-full sm:w-auto rounded-xl px-6 py-3 text-base font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition"
+            >
+              📞 Call Us: (623) 777-2376
+            </a>
+
+            {/* BOOKING / APPLICATION FORM */}
+            <div className="mt-6 bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+              <h4 className="text-lg font-semibold mb-3">
+                Apply to get a car now
+              </h4>
+              <BookingBar />
             </div>
           </div>
         </section>

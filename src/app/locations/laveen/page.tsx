@@ -92,7 +92,6 @@ export default function LaveenPage() {
                 </p>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -244,9 +243,12 @@ export default function LaveenPage() {
 
           <div className="space-y-6 text-sm md:text-base text-gray-700 dark:text-gray-200">
             <div>
-              <h3 className="font-semibold">Do you offer cheap car rentals near me in Laveen?</h3>
+              <h3 className="font-semibold">
+                Do you offer cheap car rentals near me in Laveen?
+              </h3>
               <p className="mt-1">
-                Yes — we offer affordable weekly rentals for Laveen, South Phoenix, and the West Valley.
+                Yes — we offer affordable weekly rentals for Laveen, South Phoenix,
+                and the West Valley.
               </p>
             </div>
 
@@ -261,10 +263,43 @@ export default function LaveenPage() {
             <div>
               <h3 className="font-semibold">Do you accept debit cards?</h3>
               <p className="mt-1">
-                Yes — we approve debit users while ensuring the vehicle and renter are protected.
+                Yes — we approve debit users while ensuring the vehicle and renter
+                are protected.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
 
+      {/* BOTTOM CTA — Call Us + Booking Form */}
+      <section className="section bg-white dark:bg-slate-900">
+        <div className="max-w-4xl mx-auto">
+          <div className="rounded-2xl border border-blue-100 dark:border-blue-900 bg-blue-50/80 dark:bg-slate-800/80 p-6 sm:p-8">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+              Ready to get a car near Laveen?
+            </h3>
+
+            <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 mb-6">
+              Apply for a rideshare-ready rental with unlimited miles and start earning
+              across Laveen, South Phoenix, and the surrounding areas. Call or text us —
+              or send your application through the form below.
+            </p>
+
+            {/* CALL US BUTTON */}
+            <a
+              href="tel:6237772376"
+              className="mb-6 inline-flex items-center justify-center w-full sm:w-auto rounded-xl px-6 py-3 text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
+              📞 Call Us: (623) 777-2376
+            </a>
+
+            {/* BOOKING / APPLICATION FORM */}
+            <div className="mt-6 bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+              <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">
+                Apply to get a car now
+              </h4>
+              <BookingBar />
+            </div>
           </div>
         </div>
       </section>

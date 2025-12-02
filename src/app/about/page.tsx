@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import BookingBar from "@/components/BookingBar";
 
 export default function AboutPage() {
   return (
@@ -89,6 +90,16 @@ export default function AboutPage() {
         >
           📞 Call or Text (623) 777-2376
         </Link>
+      </section>
+
+      {/* Booking Form at Bottom */}
+      <section className="py-16 bg-gray-50 dark:bg-slate-900">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-6 dark:text-white">
+            Book Your Car Today
+          </h2>
+          <BookingBar />
+        </div>
       </section>
     </main>
   );

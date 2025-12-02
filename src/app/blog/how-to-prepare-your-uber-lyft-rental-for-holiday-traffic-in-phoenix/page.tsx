@@ -1,5 +1,7 @@
 // app/blog/how-to-prepare-your-uber-lyft-rental-for-holiday-traffic-in-phoenix/page.tsx
+
 import Link from "next/link";
+import BookingBar from "@/components/BookingBar";
 
 export const metadata = {
   title:
@@ -536,49 +538,33 @@ export default function UberLyftHolidayPrepBlogPage() {
           </p>
         </article>
 
-        {/* CTA Box */}
+        {/* CTA — Call Us + Booking Form */}
         <section className="mt-12 sm:mt-16">
-          <div className="rounded-2xl border border-blue-100 dark:border-blue-900 bg-blue-50/80 dark:bg-slate-800/80 p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h3 className="text-xl font-semibold mb-2">
-                Need a Rideshare-Ready Rental for Uber or Lyft?
-              </h3>
-              <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200">
-                Reserve a fuel-efficient rental car in Phoenix with unlimited
-                mileage, insurance included, and maintenance covered — perfect
-                for Uber and Lyft drivers during the holiday rush.
-              </p>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                Call or text us at{" "}
-                <a
-                  href="tel:+16237772376"
-                  className="font-semibold text-blue-700 dark:text-blue-400 underline-offset-2 hover:underline"
-                >
-                  (623) 777-2376
-                </a>{" "}
-                to get started, or{" "}
-                <Link
-                  href="/contact"
-                  className="font-semibold text-blue-700 dark:text-blue-300 underline-offset-2 hover:underline"
-                >
-                  send us a message through our contact page
-                </Link>
-                .
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition"
-              >
-                Book a Rental
-              </Link>
-              <Link
-                href="/blog"
-                className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-100/70 dark:hover:bg-slate-800 transition"
-              >
-                More Uber &amp; Lyft Tips
-              </Link>
+          <div className="rounded-2xl border border-blue-100 dark:border-blue-900 bg-blue-50/80 dark:bg-slate-800/80 p-6 sm:p-8">
+            <h3 className="text-2xl font-semibold mb-4">
+              Need a rideshare-ready rental for Uber or Lyft?
+            </h3>
+
+            <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 mb-6">
+              Apply for a fuel-efficient, rideshare-ready rental and hit the
+              road for Phoenix&apos;s holiday rush. Call or text us — or send
+              your application through the form below.
+            </p>
+
+            {/* CALL US BUTTON */}
+            <a
+              href="tel:+16237772376"
+              className="mb-6 inline-flex items-center justify-center w-full sm:w-auto rounded-xl px-6 py-3 text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
+              📞 Call Us: (623) 777-2376
+            </a>
+
+            {/* BOOKING / APPLICATION FORM */}
+            <div className="mt-6 bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+              <h4 className="text-lg font-semibold mb-3">
+                Apply to get a car now
+              </h4>
+              <BookingBar />
             </div>
           </div>
         </section>

@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import BookingBar from "@/components/BookingBar";
+import MetaPageView from "@/components/MetaPageView"; // ⬅️ added
 
 export default function HomePage() {
   return (
     <main className="bg-white text-gray-900 dark:bg-slate-900 dark:text-gray-100">
+      {/* 🔹 Fires Pixel + CAPI PageView with dedup keys */}
+      <MetaPageView />
+
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
@@ -43,7 +47,7 @@ export default function HomePage() {
             {/* LEFT: HERO TEXT */}
             <div className="text-white max-w-3xl">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight">
-                Phoenix Rideshare Rentals for Uber, Lyft & Delivery Drivers
+                Phoenix Weekly Rideshare Rentals for Uber, Lyft & Delivery Drivers
               </h1>
 
               {/* PRICE + CALL BUTTON (MOBILE ONLY) */}
@@ -113,9 +117,21 @@ export default function HomePage() {
         </h2>
         <div className="max-w-3xl mx-auto grid md:grid-cols-3 gap-4 text-center">
           {[
-            { icon: "🪪", title: "Valid Driver’s License", desc: "Must be 21+ with a current, valid license." },
-            { icon: "💳", title: "First Week's Rent ($300)", desc: "Simple, upfront pricing. No hidden fees." },
-            { icon: "✅", title: "That's It", desc: "Fast approval and car assignment." },
+            {
+              icon: "🪪",
+              title: "Valid Driver’s License",
+              desc: "Must be 21+ with a current, valid license.",
+            },
+            {
+              icon: "💳",
+              title: "First Week's Rent ($300)",
+              desc: "Simple, upfront pricing. No hidden fees.",
+            },
+            {
+              icon: "✅",
+              title: "That's It",
+              desc: "Fast approval and car assignment.",
+            },
           ].map(({ icon, title, desc }, idx) => (
             <div
               key={idx}
@@ -136,12 +152,36 @@ export default function HomePage() {
         </h2>
         <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 text-center">
           {[
-            { icon: "🚗", title: "Pickup Same Day", desc: "Get approved and driving in under 24 hours." },
-            { icon: "🛡️", title: "Insurance Available", desc: "State-required liability provided." },
-            { icon: "📝", title: "Uber-Ready", desc: "Uber inspection forms included." },
-            { icon: "🛠️", title: "Maintenance Included", desc: "Oil changes & inspections included." },
-            { icon: "♾️", title: "Unlimited Mileage", desc: "Drive as much as you need." },
-            { icon: "⚡", title: "Built for Gig Drivers", desc: "Perfect for Uber, Lyft & delivery." },
+            {
+              icon: "🚗",
+              title: "Pickup Same Day",
+              desc: "Get approved and driving in under 24 hours.",
+            },
+            {
+              icon: "🛡️",
+              title: "Insurance Available",
+              desc: "State-required liability provided.",
+            },
+            {
+              icon: "📝",
+              title: "Uber-Ready",
+              desc: "Uber inspection forms included.",
+            },
+            {
+              icon: "🛠️",
+              title: "Maintenance Included",
+              desc: "Oil changes & inspections included.",
+            },
+            {
+              icon: "♾️",
+              title: "Unlimited Mileage",
+              desc: "Drive as much as you need.",
+            },
+            {
+              icon: "⚡",
+              title: "Built for Gig Drivers",
+              desc: "Perfect for Uber, Lyft & delivery.",
+            },
           ].map(({ icon, title, desc }, i) => (
             <div
               key={i}
