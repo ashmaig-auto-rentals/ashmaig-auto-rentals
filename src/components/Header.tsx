@@ -54,22 +54,33 @@ export default function Header({ cities = [] }: HeaderProps) {
                 </svg>
               </button>
 
-              <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 hidden group-hover:block z-50">
-                {cities.length > 0 ? (
-                  cities.map((city) => (
-                    <Link
-                      key={city}
-                      href={`/locations/${city}`}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      {formatCity(city)}
-                    </Link>
-                  ))
-                ) : (
-                  <span className="block px-4 py-2 text-sm text-gray-400">
-                    No locations yet
-                  </span>
-                )}
+              {/* Bigger / safer hover area */}
+              <div
+                className="
+                  absolute left-0 top-full pt-2
+                  opacity-0 invisible
+                  group-hover:opacity-100 group-hover:visible
+                  transition-opacity duration-150
+                  z-50
+                "
+              >
+                <div className="w-56 bg-white rounded-lg shadow-lg border border-gray-200">
+                  {cities.length > 0 ? (
+                    cities.map((city) => (
+                      <Link
+                        key={city}
+                        href={`/locations/${city}`}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        {formatCity(city)}
+                      </Link>
+                    ))
+                  ) : (
+                    <span className="block px-4 py-2 text-sm text-gray-400">
+                      No locations yet
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -92,21 +103,31 @@ export default function Header({ cities = [] }: HeaderProps) {
                 </svg>
               </button>
 
-              {/* Dropdown Items */}
-              <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden group-hover:block z-50">
-                <Link
-                  href="/blog"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Blog
-                </Link>
+              {/* Bigger / safer hover area */}
+              <div
+                className="
+                  absolute left-0 top-full pt-2
+                  opacity-0 invisible
+                  group-hover:opacity-100 group-hover:visible
+                  transition-opacity duration-150
+                  z-50
+                "
+              >
+                <div className="w-48 bg-white rounded-lg shadow-lg border border-gray-200">
+                  <Link
+                    href="/blog"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Blog
+                  </Link>
 
-                <Link
-                  href="/about"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  About Us
-                </Link>
+                  <Link
+                    href="/about"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    About Us
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -202,14 +223,14 @@ export default function Header({ cities = [] }: HeaderProps) {
               >
                 Contact Us
               </Link>
-            </div>
 
-            <a
-              href="tel:6237772376"
-              className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 text-center"
-            >
-              📞 Call Us
-            </a>
+              <a
+                href="tel:6237772376"
+                className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 text-center"
+              >
+                📞 Call Us
+              </a>
+            </div>
           </div>
         </div>
       )}
