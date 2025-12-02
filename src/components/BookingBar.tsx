@@ -31,6 +31,10 @@ export default function BookingBar() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  // 🆕 Pickup / Dropoff dates
+  const [pickupDate, setPickupDate] = useState("");
+  const [dropoffDate, setDropoffDate] = useState("");
+
   // REQUIRED files
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [profileFile, setProfileFile] = useState<File | null>(null);
@@ -39,7 +43,9 @@ export default function BookingBar() {
   const [profileUrl, setProfileUrl] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(null);
+  const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(
+    null
+  );
 
   useEffect(() => {
     console.log("Env variables loaded.");
@@ -48,6 +54,15 @@ export default function BookingBar() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus(null);
+
+    // basic check for dates
+    if (!pickupDate || !dropoffDate) {
+      setStatus({
+        ok: false,
+        msg: "Please select both a pickup date and a dropoff date.",
+      });
+      return;
+    }
 
     // ❌ If files missing → block
     if (!licenseFile || !profileFile) {
@@ -69,6 +84,9 @@ export default function BookingBar() {
         last_name: lastName,
         email,
         phone,
+        // 🆕 include dates in payload for EmailJS
+        pickup_date: pickupDate,
+        dropoff_date: dropoffDate,
         license_url: "",
         insurance_url: "",
       };
@@ -79,7 +97,9 @@ export default function BookingBar() {
         if (!supabase) return "";
         const ext = file.name.split(".").pop();
         const path = `${prefix}_${Date.now()}.${ext}`;
-        const { error } = await supabase.storage.from(BUCKET).upload(path, file);
+        const { error } = await supabase.storage
+          .from(BUCKET)
+          .upload(path, file);
         if (error) {
           console.error(`Upload ${prefix} failed:`, error.message);
           return "";
@@ -100,7 +120,7 @@ export default function BookingBar() {
         insurance_url: profileLink,
       };
 
-      // Send EmailJS
+      // Send EmailJS (includes pickup_date & dropoff_date now)
       const res = await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
@@ -108,7 +128,7 @@ export default function BookingBar() {
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
 
-      // Meta Pixel
+      // Meta Pixel + CAPI
       try {
         const capiRes = await fetch("/api/submit-application", {
           method: "POST",
@@ -118,6 +138,8 @@ export default function BookingBar() {
             lastName,
             email,
             phone,
+            pickupDate,
+            dropoffDate,
             eventSourceUrl:
               typeof window !== "undefined" ? window.location.href : undefined,
           }),
@@ -147,6 +169,7 @@ export default function BookingBar() {
     <div className="w-full bg-white dark:bg-slate-800 shadow-md border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-4 text-gray-900 dark:text-gray-100">
       {step === "form" && (
         <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-4">
+          {/* Name */}
           <div className="flex flex-col md:flex-row gap-3">
             <input
               type="text"
@@ -166,6 +189,7 @@ export default function BookingBar() {
             />
           </div>
 
+          {/* Contact */}
           <input
             type="email"
             required
@@ -184,6 +208,35 @@ export default function BookingBar() {
             className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
 
+          {/* 🆕 Pickup / Dropoff Dates */}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                Pickup Date
+              </label>
+              <input
+                type="date"
+                required
+                value={pickupDate}
+                onChange={(e) => setPickupDate(e.target.value)}
+                className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                Dropoff Date
+              </label>
+              <input
+                type="date"
+                required
+                value={dropoffDate}
+                onChange={(e) => setDropoffDate(e.target.value)}
+                className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+              />
+            </div>
+          </div>
+
           {/* REQUIRED — Driver’s License */}
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
             <span className="text-3xl">🪪</span>
@@ -197,7 +250,9 @@ export default function BookingBar() {
               accept="image/*,application/pdf"
               className="hidden"
             />
-            {licenseFile && <span className="mt-1 text-xs">{licenseFile.name}</span>}
+            {licenseFile && (
+              <span className="mt-1 text-xs">{licenseFile.name}</span>
+            )}
           </label>
 
           {/* REQUIRED — Rideshare Profile */}
@@ -213,9 +268,12 @@ export default function BookingBar() {
               accept="image/*,application/pdf"
               className="hidden"
             />
-            {profileFile && <span className="mt-1 text-xs">{profileFile.name}</span>}
+            {profileFile && (
+              <span className="mt-1 text-xs">{profileFile.name}</span>
+            )}
           </label>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={submitting || !licenseFile || !profileFile}
