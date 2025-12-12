@@ -21,6 +21,36 @@ function getSupabase(): SupabaseClient | null {
 
 const BUCKET = "Insurance_Licenses";
 
+// ✅ Minimum rental requirement
+const MIN_RENTAL_DAYS = 30;
+
+// ✅ Day difference helper for YYYY-MM-DD inputs
+function daysBetween(startISO: string, endISO: string) {
+  const start = new Date(`${startISO}T00:00:00`);
+  const end = new Date(`${endISO}T00:00:00`);
+  return Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+// ✅ Phone helper: converts "(623) 777-2376" -> "+16237772376"
+function phoneToTel(phone: string) {
+  const digits = (phone || "").replace(/\D/g, "");
+  if (!digits) return "";
+  // US 10-digit -> +1
+  if (digits.length === 10) return `+1${digits}`;
+  // 11+ digits -> assume includes country code
+  if (digits.length >= 11) return `+${digits}`;
+  return digits;
+}
+
+// ✅ Today in YYYY-MM-DD (for input min=)
+function todayISO() {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 export default function BookingBar() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -31,7 +61,7 @@ export default function BookingBar() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  // 🆕 Pickup / Dropoff dates
+  // Pickup / Dropoff dates
   const [pickupDate, setPickupDate] = useState("");
   const [dropoffDate, setDropoffDate] = useState("");
 
@@ -55,11 +85,20 @@ export default function BookingBar() {
     e.preventDefault();
     setStatus(null);
 
-    // basic check for dates
+    // ✅ Date checks (and minimum 1 month)
     if (!pickupDate || !dropoffDate) {
       setStatus({
         ok: false,
         msg: "Please select both a pickup date and a dropoff date.",
+      });
+      return;
+    }
+
+    const rentalDays = daysBetween(pickupDate, dropoffDate);
+    if (rentalDays < MIN_RENTAL_DAYS) {
+      setStatus({
+        ok: false,
+        msg: "Minimum rental period is 1 month (30 days). Weekly payments are allowed—please select a later dropoff date.",
       });
       return;
     }
@@ -78,13 +117,16 @@ export default function BookingBar() {
     try {
       const fullName = `${firstName} ${lastName}`.trim();
 
+      // ✅ This is what your email template should use in: href="tel:{{phone_digits}}"
+      const phoneDigits = phoneToTel(phone);
+
       const basePayload = {
         name: fullName,
         first_name: firstName,
         last_name: lastName,
         email,
-        phone,
-        // 🆕 include dates in payload for EmailJS
+        phone, // formatted for display
+        phone_digits: phoneDigits, // ✅ digits-only + country code for tel: link
         pickup_date: pickupDate,
         dropoff_date: dropoffDate,
         license_url: "",
@@ -97,9 +139,7 @@ export default function BookingBar() {
         if (!supabase) return "";
         const ext = file.name.split(".").pop();
         const path = `${prefix}_${Date.now()}.${ext}`;
-        const { error } = await supabase.storage
-          .from(BUCKET)
-          .upload(path, file);
+        const { error } = await supabase.storage.from(BUCKET).upload(path, file);
         if (error) {
           console.error(`Upload ${prefix} failed:`, error.message);
           return "";
@@ -120,8 +160,8 @@ export default function BookingBar() {
         insurance_url: profileLink,
       };
 
-      // Send EmailJS (includes pickup_date & dropoff_date now)
-      const res = await emailjs.send(
+      // Send EmailJS
+      await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
         payload,
@@ -208,7 +248,7 @@ export default function BookingBar() {
             className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
 
-          {/* 🆕 Pickup / Dropoff Dates */}
+          {/* Pickup / Dropoff Dates */}
           <div className="flex flex-col gap-4">
             <div className="flex flex-col">
               <label className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
@@ -217,6 +257,7 @@ export default function BookingBar() {
               <input
                 type="date"
                 required
+                min={todayISO()} // ✅ prevent past dates
                 value={pickupDate}
                 onChange={(e) => setPickupDate(e.target.value)}
                 className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
@@ -230,10 +271,18 @@ export default function BookingBar() {
               <input
                 type="date"
                 required
+                min={todayISO()} // ✅ prevent past dates
                 value={dropoffDate}
                 onChange={(e) => setDropoffDate(e.target.value)}
                 className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
               />
+
+              {/* ✅ Visible policy text */}
+              <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
+                Minimum rental period is <strong>1 month (30 days)</strong>.
+                Weekly payments are allowed. Please select a dropoff date at
+                least 30 days after pickup.
+              </p>
             </div>
           </div>
 
