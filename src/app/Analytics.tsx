@@ -2,11 +2,28 @@
 
 import Script from "next/script";
 
-const FB_PIXEL_ID = "1789341548442036"; // your new pixel
+const FB_PIXEL_ID = "1789341548442036";
+const GA4_ID = "G-GDTZ54W808";
 
 export default function Analytics() {
   return (
     <>
+      {/* ✅ GA4 */}
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
+        strategy="afterInteractive"
+      />
+      <Script id="ga4-init" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', '${GA4_ID}', { send_page_view: true });
+        `}
+      </Script>
+
+      {/* ✅ Meta Pixel */}
       <Script
         id="fb-pixel"
         strategy="afterInteractive"

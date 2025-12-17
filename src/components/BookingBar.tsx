@@ -24,31 +24,38 @@ const BUCKET = "Insurance_Licenses";
 // ✅ Minimum rental requirement
 const MIN_RENTAL_DAYS = 30;
 
-// ✅ Day difference helper for YYYY-MM-DD inputs
+// ✅ Day difference helper
 function daysBetween(startISO: string, endISO: string) {
   const start = new Date(`${startISO}T00:00:00`);
   const end = new Date(`${endISO}T00:00:00`);
   return Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-// ✅ Phone helper: converts "(623) 777-2376" -> "+16237772376"
+// ✅ Phone helper
 function phoneToTel(phone: string) {
   const digits = (phone || "").replace(/\D/g, "");
   if (!digits) return "";
-  // US 10-digit -> +1
   if (digits.length === 10) return `+1${digits}`;
-  // 11+ digits -> assume includes country code
   if (digits.length >= 11) return `+${digits}`;
   return digits;
 }
 
-// ✅ Today in YYYY-MM-DD (for input min=)
+// ✅ Today helper
 function todayISO() {
   const d = new Date();
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
+}
+
+// ✅ GA4 helper
+function gaEvent(eventName: string, params: Record<string, any> = {}) {
+  if (typeof window === "undefined") return;
+  const gtag = (window as any).gtag;
+  if (typeof gtag === "function") {
+    gtag("event", eventName, params);
+  }
 }
 
 export default function BookingBar() {
@@ -61,16 +68,11 @@ export default function BookingBar() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  // Pickup / Dropoff dates
   const [pickupDate, setPickupDate] = useState("");
   const [dropoffDate, setDropoffDate] = useState("");
 
-  // REQUIRED files
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [profileFile, setProfileFile] = useState<File | null>(null);
-
-  const [licenseUrl, setLicenseUrl] = useState<string | null>(null);
-  const [profileUrl, setProfileUrl] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(
@@ -78,19 +80,15 @@ export default function BookingBar() {
   );
 
   useEffect(() => {
-    console.log("Env variables loaded.");
+    console.log("BookingBar loaded");
   }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus(null);
 
-    // ✅ Date checks (and minimum 1 month)
     if (!pickupDate || !dropoffDate) {
-      setStatus({
-        ok: false,
-        msg: "Please select both a pickup date and a dropoff date.",
-      });
+      setStatus({ ok: false, msg: "Please select both dates." });
       return;
     }
 
@@ -98,16 +96,15 @@ export default function BookingBar() {
     if (rentalDays < MIN_RENTAL_DAYS) {
       setStatus({
         ok: false,
-        msg: "Minimum rental period is 1 month (30 days). Weekly payments are allowed—please select a later dropoff date.",
+        msg: "Minimum rental period is 30 days.",
       });
       return;
     }
 
-    // ❌ If files missing → block
     if (!licenseFile || !profileFile) {
       setStatus({
         ok: false,
-        msg: "Please upload BOTH your Driver’s License and Rideshare Profile.",
+        msg: "Please upload both required documents.",
       });
       return;
     }
@@ -116,8 +113,6 @@ export default function BookingBar() {
 
     try {
       const fullName = `${firstName} ${lastName}`.trim();
-
-      // ✅ This is what your email template should use in: href="tel:{{phone_digits}}"
       const phoneDigits = phoneToTel(phone);
 
       const basePayload = {
@@ -125,8 +120,8 @@ export default function BookingBar() {
         first_name: firstName,
         last_name: lastName,
         email,
-        phone, // formatted for display
-        phone_digits: phoneDigits, // ✅ digits-only + country code for tel: link
+        phone,
+        phone_digits: phoneDigits,
         pickup_date: pickupDate,
         dropoff_date: dropoffDate,
         license_url: "",
@@ -140,10 +135,7 @@ export default function BookingBar() {
         const ext = file.name.split(".").pop();
         const path = `${prefix}_${Date.now()}.${ext}`;
         const { error } = await supabase.storage.from(BUCKET).upload(path, file);
-        if (error) {
-          console.error(`Upload ${prefix} failed:`, error.message);
-          return "";
-        }
+        if (error) return "";
         const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
         return data.publicUrl;
       }
@@ -151,24 +143,18 @@ export default function BookingBar() {
       const licenseLink = await uploadFile(licenseFile, "license");
       const profileLink = await uploadFile(profileFile, "profile");
 
-      setLicenseUrl(licenseLink || null);
-      setProfileUrl(profileLink || null);
-
-      const payload = {
-        ...basePayload,
-        license_url: licenseLink,
-        insurance_url: profileLink,
-      };
-
-      // Send EmailJS
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        payload,
+        {
+          ...basePayload,
+          license_url: licenseLink,
+          insurance_url: profileLink,
+        },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
 
-      // Meta Pixel + CAPI
+      // ✅ Meta Pixel + CAPI
       try {
         const capiRes = await fetch("/api/submit-application", {
           method: "POST",
@@ -180,8 +166,7 @@ export default function BookingBar() {
             phone,
             pickupDate,
             dropoffDate,
-            eventSourceUrl:
-              typeof window !== "undefined" ? window.location.href : undefined,
+            eventSourceUrl: window.location.href,
           }),
         });
 
@@ -195,6 +180,12 @@ export default function BookingBar() {
         fbq("track", "SubmitApplication");
       }
 
+      // ✅ GA4 conversion (IMPORT THIS INTO GOOGLE ADS)
+      gaEvent("generate_lead", {
+        event_category: "Application",
+        event_label: "BookingBar Submit",
+      });
+
       setStatus({ ok: true, msg: "Submitted successfully!" });
       setStep("verify");
     } catch (err) {
@@ -206,143 +197,80 @@ export default function BookingBar() {
   }
 
   return (
-    <div className="w-full bg-white dark:bg-slate-800 shadow-md border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-4 text-gray-900 dark:text-gray-100">
+    <div className="w-full bg-white dark:bg-slate-800 shadow-md border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex flex-col gap-4">
       {step === "form" && (
         <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-4">
-          {/* Name */}
-          <div className="flex flex-col md:flex-row gap-3">
-            <input
-              type="text"
-              placeholder="First Name"
-              required
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="flex-1 border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              required
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="flex-1 border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Contact */}
           <input
-            type="email"
             required
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="border rounded px-3 py-2"
+          />
+          <input
+            required
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="border rounded px-3 py-2"
+          />
+          <input
+            required
+            type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+            className="border rounded px-3 py-2"
+          />
+          <input
+            required
+            type="tel"
+            placeholder="Phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="border rounded px-3 py-2"
           />
 
           <input
-            type="tel"
+            type="date"
             required
-            placeholder="Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+            min={todayISO()}
+            value={pickupDate}
+            onChange={(e) => setPickupDate(e.target.value)}
+            className="border rounded px-3 py-2"
+          />
+          <input
+            type="date"
+            required
+            min={todayISO()}
+            value={dropoffDate}
+            onChange={(e) => setDropoffDate(e.target.value)}
+            className="border rounded px-3 py-2"
           />
 
-          {/* Pickup / Dropoff Dates */}
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                Pickup Date
-              </label>
-              <input
-                type="date"
-                required
-                min={todayISO()} // ✅ prevent past dates
-                value={pickupDate}
-                onChange={(e) => setPickupDate(e.target.value)}
-                className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-              />
-            </div>
+          <input
+            type="file"
+            required
+            accept="image/*,application/pdf"
+            onChange={(e) => setLicenseFile(e.target.files?.[0] || null)}
+          />
+          <input
+            type="file"
+            required
+            accept="image/*,application/pdf"
+            onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
+          />
 
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                Dropoff Date
-              </label>
-              <input
-                type="date"
-                required
-                min={todayISO()} // ✅ prevent past dates
-                value={dropoffDate}
-                onChange={(e) => setDropoffDate(e.target.value)}
-                className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
-              />
-
-              {/* ✅ Visible policy text */}
-              <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
-                Minimum rental period is <strong>1 month (30 days)</strong>.
-                Weekly payments are allowed. Please select a dropoff date at
-                least 30 days after pickup.
-              </p>
-            </div>
-          </div>
-
-          {/* REQUIRED — Driver’s License */}
-          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
-            <span className="text-3xl">🪪</span>
-            <span className="text-sm font-medium text-red-600">
-              Upload Driver’s License (Required)
-            </span>
-            <input
-              type="file"
-              required
-              onChange={(e) => setLicenseFile(e.target.files?.[0] || null)}
-              accept="image/*,application/pdf"
-              className="hidden"
-            />
-            {licenseFile && (
-              <span className="mt-1 text-xs">{licenseFile.name}</span>
-            )}
-          </label>
-
-          {/* REQUIRED — Rideshare Profile */}
-          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700">
-            <span className="text-3xl">📱</span>
-            <span className="text-sm font-medium text-red-600">
-              Upload Rideshare Profile (Required)
-            </span>
-            <input
-              type="file"
-              required
-              onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
-              accept="image/*,application/pdf"
-              className="hidden"
-            />
-            {profileFile && (
-              <span className="mt-1 text-xs">{profileFile.name}</span>
-            )}
-          </label>
-
-          {/* Submit */}
           <button
             type="submit"
-            disabled={submitting || !licenseFile || !profileFile}
-            className={`px-6 py-2 rounded-lg text-sm font-medium text-white ${
-              submitting || !licenseFile || !profileFile
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700"
-            }`}
+            disabled={submitting}
+            className="bg-green-600 text-white py-2 rounded"
           >
             {submitting ? "Submitting..." : "Submit Info"}
           </button>
 
           {status && (
-            <p
-              className={
-                status.ok
-                  ? "text-green-600 dark:text-green-400 text-sm"
-                  : "text-red-600 dark:text-red-400 text-sm"
-              }
-            >
+            <p className={status.ok ? "text-green-600" : "text-red-600"}>
               {status.msg}
             </p>
           )}
@@ -350,8 +278,8 @@ export default function BookingBar() {
       )}
 
       {step === "verify" && (
-        <div className="text-center text-green-700 dark:text-green-400 font-medium">
-          🎉 Thank you! We’ve received your info and will contact you shortly.
+        <div className="text-center text-green-600 font-medium">
+          🎉 Thank you! We’ll contact you shortly.
         </div>
       )}
     </div>
