@@ -24,23 +24,25 @@ const BUCKET = "Insurance_Licenses";
 // ✅ Minimum rental requirement
 const MIN_RENTAL_DAYS = 30;
 
-// ✅ Day difference helper
+// ✅ Day difference helper for YYYY-MM-DD inputs
 function daysBetween(startISO: string, endISO: string) {
   const start = new Date(`${startISO}T00:00:00`);
   const end = new Date(`${endISO}T00:00:00`);
   return Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-// ✅ Phone helper
+// ✅ Phone helper: converts "(623) 777-2376" -> "+16237772376"
 function phoneToTel(phone: string) {
   const digits = (phone || "").replace(/\D/g, "");
   if (!digits) return "";
+  // US 10-digit -> +1
   if (digits.length === 10) return `+1${digits}`;
+  // 11+ digits -> assume includes country code
   if (digits.length >= 11) return `+${digits}`;
   return digits;
 }
 
-// ✅ Today helper
+// ✅ Today in YYYY-MM-DD (for input min=)
 function todayISO() {
   const d = new Date();
   const yyyy = d.getFullYear();
@@ -68,11 +70,13 @@ export default function BookingBar() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  // Pickup / Dropoff dates
   const [pickupDate, setPickupDate] = useState("");
   const [dropoffDate, setDropoffDate] = useState("");
 
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [profileFile, setProfileFile] = useState<File | null>(null);
+  const [payoutFile, setPayoutFile] = useState<File | null>(null); // ✅ NEW
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(
@@ -87,8 +91,9 @@ export default function BookingBar() {
     e.preventDefault();
     setStatus(null);
 
+    // ✅ Date checks (and minimum 1 month)
     if (!pickupDate || !dropoffDate) {
-      setStatus({ ok: false, msg: "Please select both dates." });
+      setStatus({ ok: false, msg: "Please select both pickup and dropoff dates." });
       return;
     }
 
@@ -96,15 +101,16 @@ export default function BookingBar() {
     if (rentalDays < MIN_RENTAL_DAYS) {
       setStatus({
         ok: false,
-        msg: "Minimum rental period is 30 days.",
+        msg: "Minimum rental period is 1 month (30 days). Weekly payments are allowed—please select a later dropoff date.",
       });
       return;
     }
 
-    if (!licenseFile || !profileFile) {
+    // ❌ If files missing → block
+    if (!licenseFile || !profileFile || !payoutFile) {
       setStatus({
         ok: false,
-        msg: "Please upload both required documents.",
+        msg: "Please upload all required documents (license + rideshare profile + latest payout).",
       });
       return;
     }
@@ -113,6 +119,8 @@ export default function BookingBar() {
 
     try {
       const fullName = `${firstName} ${lastName}`.trim();
+
+      // ✅ This is what your email template should use in: href="tel:{{phone_digits}}"
       const phoneDigits = phoneToTel(phone);
 
       const basePayload = {
@@ -120,37 +128,46 @@ export default function BookingBar() {
         first_name: firstName,
         last_name: lastName,
         email,
-        phone,
-        phone_digits: phoneDigits,
+        phone, // formatted for display
+        phone_digits: phoneDigits, // ✅ digits-only + country code for tel: link
         pickup_date: pickupDate,
         dropoff_date: dropoffDate,
         license_url: "",
         insurance_url: "",
+        payout_url: "", // ✅ NEW
       };
 
       const supabase = getSupabase();
 
       async function uploadFile(file: File, prefix: string) {
         if (!supabase) return "";
-        const ext = file.name.split(".").pop();
+        const ext = file.name.split(".").pop() || "file";
         const path = `${prefix}_${Date.now()}.${ext}`;
         const { error } = await supabase.storage.from(BUCKET).upload(path, file);
-        if (error) return "";
+        if (error) {
+          console.error(`Upload ${prefix} failed:`, error.message);
+          return "";
+        }
         const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
         return data.publicUrl;
       }
 
       const licenseLink = await uploadFile(licenseFile, "license");
       const profileLink = await uploadFile(profileFile, "profile");
+      const payoutLink = await uploadFile(payoutFile, "payout"); // ✅ NEW
 
+      const payload = {
+        ...basePayload,
+        license_url: licenseLink,
+        insurance_url: profileLink,
+        payout_url: payoutLink, // ✅ NEW
+      };
+
+      // Send EmailJS
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          ...basePayload,
-          license_url: licenseLink,
-          insurance_url: profileLink,
-        },
+        payload,
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
 
@@ -205,14 +222,14 @@ export default function BookingBar() {
             placeholder="First Name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="border rounded px-3 py-2"
+            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
           <input
             required
             placeholder="Last Name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="border rounded px-3 py-2"
+            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
           <input
             required
@@ -220,7 +237,7 @@ export default function BookingBar() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border rounded px-3 py-2"
+            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
           <input
             required
@@ -228,43 +245,101 @@ export default function BookingBar() {
             placeholder="Phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="border rounded px-3 py-2"
+            className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
           />
 
-          <input
-            type="date"
-            required
-            min={todayISO()}
-            value={pickupDate}
-            onChange={(e) => setPickupDate(e.target.value)}
-            className="border rounded px-3 py-2"
-          />
-          <input
-            type="date"
-            required
-            min={todayISO()}
-            value={dropoffDate}
-            onChange={(e) => setDropoffDate(e.target.value)}
-            className="border rounded px-3 py-2"
-          />
+          {/* Pickup / Dropoff Dates */}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                Start Date
+              </label>
+              <input
+                type="date"
+                required
+                min={todayISO()}
+                value={pickupDate}
+                onChange={(e) => setPickupDate(e.target.value)}
+                className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+              />
+            </div>
 
-          <input
-            type="file"
-            required
-            accept="image/*,application/pdf"
-            onChange={(e) => setLicenseFile(e.target.files?.[0] || null)}
-          />
-          <input
-            type="file"
-            required
-            accept="image/*,application/pdf"
-            onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
-          />
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                Return Date
+              </label>
+              <input
+                type="date"
+                required
+                min={todayISO()}
+                value={dropoffDate}
+                onChange={(e) => setDropoffDate(e.target.value)}
+                className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+              />
+
+              {/* ✅ Visible policy text (like before) */}
+              <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
+                Minimum rental period is <strong>1 month (30 days)</strong>, but you&apos;re
+                allowed to <strong>pay weekly</strong>. Please select a return date at least{" "}
+                <strong>30 days</strong> after your start date.
+              </p>
+            </div>
+          </div>
+
+          {/* Upload fields */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-800 dark:text-gray-100">
+              Upload Driver’s License
+            </label>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Clear photo or PDF of your valid driver’s license.
+            </p>
+            <input
+              type="file"
+              required
+              accept="image/*,application/pdf"
+              onChange={(e) => setLicenseFile(e.target.files?.[0] || null)}
+              className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-800 dark:text-gray-100">
+              Upload Rideshare Profile (Uber/Lyft)
+            </label>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Screenshot or PDF showing your active rideshare/delivery driver profile.
+            </p>
+            <input
+              type="file"
+              required
+              accept="image/*,application/pdf"
+              onChange={(e) => setProfileFile(e.target.files?.[0] || null)}
+              className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:text-gray-100"
+            />
+          </div>
+
+          {/* ✅ NEW: Latest payout */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-800 dark:text-gray-100">
+              Upload Latest Payout
+            </label>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Screenshot or PDF of your most recent Uber/Lyft/Delivery payout statement.
+            </p>
+            <input
+              type="file"
+              required
+              accept="image/*,application/pdf"
+              onChange={(e) => setPayoutFile(e.target.files?.[0] || null)}
+              className="border rounded-md px-3 py-2 text-sm bg-white dark:bg-slate-700 dark:border-gray-600 dark:border-gray-600 dark:text-gray-100"
+            />
+          </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="bg-green-600 text-white py-2 rounded"
+            className="bg-green-600 text-white py-2 rounded-md"
           >
             {submitting ? "Submitting..." : "Submit Info"}
           </button>
