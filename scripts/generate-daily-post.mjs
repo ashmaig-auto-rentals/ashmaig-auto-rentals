@@ -48,12 +48,97 @@ function todayISO() {
   return d.toISOString().slice(0, 10);
 }
 
-function pickNextTopic(queue) {
-  const usedSet = new Set(queue.used || []);
-  const next = (queue.topics || []).find((t) => !usedSet.has(t));
-  if (!next) return null;
-  queue.used = [...usedSet, next];
-  return next;
+function normalizeTopic(t) {
+  return String(t || "").trim().replace(/\s+/g, " ");
+}
+
+function uniqNewTopics(existingTopics, candidates) {
+  const existing = new Set((existingTopics || []).map(normalizeTopic));
+  const out = [];
+  for (const raw of candidates || []) {
+    const t = normalizeTopic(raw);
+    if (!t) continue;
+    if (existing.has(t)) continue;
+    existing.add(t);
+    out.push(t);
+  }
+  return out;
+}
+
+async function generateMoreTopics({ existingTopics, count = 30 }) {
+  const prompt = `
+You are generating blog post topic ideas for Ashmaig Auto Rentals in Phoenix, AZ.
+
+Audience: Uber, Lyft, DoorDash, Uber Eats, Instacart, Amazon Flex drivers in Phoenix metro.
+Goal: SEO-friendly topics that sound local and useful. Avoid spammy phrasing.
+
+Return VALID JSON ONLY in this exact shape:
+{
+  "topics": ["...", "...", "..."]
+}
+
+Rules:
+- Generate exactly ${count} topics.
+- Each topic should be unique and specific to Phoenix/Tempe/Scottsdale/Glendale/Mesa.
+- Avoid repeating existing topics.
+- Avoid quotation marks inside titles.
+- No markdown fences. JSON only.
+- Do not include the business name in every title (use it sparingly).
+- Mix formats: guides, “best areas”, “mistakes”, “routes”, “peak hours”, “airport tips”, “heatmap strategy”, etc.
+
+Existing topics (avoid repeats):
+${(existingTopics || []).map((t) => `- ${t}`).join("\n")}
+`;
+
+  const resp = await client.responses.create({
+    model: "gpt-5",
+    input: prompt,
+  });
+
+  const text = resp?.output_text;
+  if (!text) throw new Error("Topic generation returned no output_text.");
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(
+      "Topic generation did not return valid JSON. First 600 chars:\n" +
+        text.slice(0, 600)
+    );
+  }
+
+  const proposed = Array.isArray(data?.topics) ? data.topics : [];
+  return proposed;
+}
+
+async function pickNextTopicOrRefill(queue) {
+  queue.topics = queue.topics || [];
+  queue.used = queue.used || [];
+
+  const usedSet = new Set(queue.used.map(normalizeTopic));
+  const next = queue.topics.find((t) => !usedSet.has(normalizeTopic(t)));
+
+  if (next) {
+    queue.used = [...new Set([...queue.used.map(normalizeTopic), normalizeTopic(next)])];
+    return next;
+  }
+
+  console.log("No unused topics left. Generating more topics...");
+  const proposed = await generateMoreTopics({ existingTopics: queue.topics, count: 30 });
+  const newOnes = uniqNewTopics(queue.topics, proposed);
+
+  if (newOnes.length === 0) {
+    throw new Error(
+      "Topic generation produced 0 new unique topics. Try again or adjust prompt."
+    );
+  }
+
+  queue.topics.push(...newOnes);
+
+  const firstNew = newOnes[0];
+  queue.used = [...new Set([...queue.used.map(normalizeTopic), normalizeTopic(firstNew)])];
+  return firstNew;
 }
 
 function escapeHTML(s = "") {
@@ -159,7 +244,10 @@ Rules:
     throw new Error("Post plan missing meta fields:\n" + JSON.stringify(data, null, 2));
   }
   if (!Array.isArray(data?.article?.sections) || data.article.sections.length < 5) {
-    throw new Error("Post plan missing sections array or too few sections:\n" + JSON.stringify(data, null, 2));
+    throw new Error(
+      "Post plan missing sections array or too few sections:\n" +
+        JSON.stringify(data, null, 2)
+    );
   }
 
   return data;
@@ -346,11 +434,7 @@ async function main() {
   const queuePath = path.join(process.cwd(), "scripts", "blog-topics.json");
   const queue = readJSON(queuePath);
 
-  const topic = pickNextTopic(queue);
-  if (!topic) {
-    console.log("No unused topics left. Add more topics to scripts/blog-topics.json");
-    process.exit(0);
-  }
+  const topic = await pickNextTopicOrRefill(queue);
 
   const date = todayISO();
   const slugBase = slugify(topic);
