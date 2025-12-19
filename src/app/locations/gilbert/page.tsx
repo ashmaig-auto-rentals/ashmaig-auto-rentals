@@ -51,7 +51,7 @@ export default function GilbertPage() {
               {/* MOBILE PRICE + CALL */}
               <div className="mt-4 flex items-center gap-3 md:hidden">
                 <div className="bg-green-600 text-white text-lg font-bold px-4 py-1.5 rounded-full shadow-lg">
-                  From $300/week
+                  From $400/week
                 </div>
                 <a
                   href="tel:6237772376"
@@ -63,7 +63,7 @@ export default function GilbertPage() {
 
               {/* DESKTOP PRICE */}
               <div className="hidden md:inline-block mt-4 bg-green-600 text-white text-lg md:text-xl font-bold px-4 py-1.5 rounded-full shadow-lg">
-                Cheap weekly car rentals near Gilbert from $300/week
+                Cheap weekly car rentals near Gilbert from $400/week
               </div>
 
               <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">

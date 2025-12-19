@@ -53,7 +53,7 @@ export default function HomePage() {
               {/* PRICE + CALL BUTTON (MOBILE ONLY) */}
               <div className="mt-4 flex items-center gap-3 md:hidden">
                 <div className="bg-green-600 text-white text-lg font-bold px-4 py-1.5 rounded-full shadow-lg">
-                  $300/week
+                  $400/week
                 </div>
 
                 <a
@@ -66,7 +66,7 @@ export default function HomePage() {
 
               {/* DESKTOP PRICE BADGE */}
               <div className="hidden md:inline-block mt-4 bg-green-600 text-white text-lg md:text-xl font-bold px-4 py-1.5 rounded-full shadow-lg">
-                $300/week
+                $400/week
               </div>
 
               <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
@@ -100,7 +100,7 @@ export default function HomePage() {
       <section className="bg-blue-600 text-white py-12 text-center">
         <h2 className="text-3xl font-bold">Start Earning with a Reliable Work Car</h2>
         <p className="mt-3 text-lg">
-          Rentals from $300/week. Same-day approval and pickup.
+          $400/week Rentals (insurance included). Same-day approval and pickup.
         </p>
         <a
           href="tel:6237772376"
@@ -124,7 +124,7 @@ export default function HomePage() {
             },
             {
               icon: "💳",
-              title: "First Week's Rent ($300)",
+              title: "First Week's Rent ($400)",
               desc: "Simple, upfront pricing. No hidden fees.",
             },
             {

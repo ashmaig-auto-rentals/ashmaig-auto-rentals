@@ -5,14 +5,14 @@ import BookingBar from "@/components/BookingBar";
 export const metadata = {
   title: "Surprise Uber & Lyft Car Rentals | Ashmaig Auto Rentals",
   description:
-    "Surprise AZ rideshare car rentals for Uber, Lyft, and delivery drivers. $300/week, insurance & maintenance included, unlimited miles, no deposit, same-day approval.",
+    "Surprise AZ rideshare car rentals for Uber, Lyft, and delivery drivers. $400/week, insurance & maintenance included, unlimited miles, no deposit, same-day approval.",
   alternates: {
     canonical: "https://ashmaig.com/locations/surprise",
   },
   openGraph: {
     title: "Surprise Uber & Lyft Car Rentals | Ashmaig Auto Rentals",
     description:
-      "Rent a reliable rideshare car in Surprise for Uber, Lyft, and delivery. $300/week, unlimited miles, insurance & maintenance included.",
+      "Rent a reliable rideshare car in Surprise for Uber, Lyft, and delivery. $400/week, unlimited miles, insurance & maintenance included.",
     url: "https://ashmaig.com/locations/surprise",
     type: "website",
     locale: "en_US",
@@ -37,7 +37,7 @@ export default function SurprisePage() {
         name: "How much does a rideshare rental cost in Surprise?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Most Surprise rideshare rentals start at $300 per week. This includes insurance, basic maintenance, and unlimited mileage for Uber, Lyft, and delivery driving.",
+          text: "Most Surprise rideshare rentals start at $400 per week. This includes insurance, basic maintenance, and unlimited mileage for Uber, Lyft, and delivery driving.",
         },
       },
       {
@@ -141,7 +141,7 @@ export default function SurprisePage() {
               {/* MOBILE PRICE + CALL */}
               <div className="mt-4 flex items-center gap-3 md:hidden">
                 <div className="bg-green-600 text-white text-lg font-bold px-4 py-1.5 rounded-full shadow-lg">
-                  From $300/week
+                  From $400/week
                 </div>
                 <a
                   href="tel:6237772376"
@@ -153,7 +153,7 @@ export default function SurprisePage() {
 
               {/* DESKTOP PRICE */}
               <div className="hidden md:inline-block mt-4 bg-green-600 text-white text-lg md:text-xl font-bold px-4 py-1.5 rounded-full shadow-lg">
-                $300/week • Unlimited Miles • Insurance Included
+                $400/week • Unlimited Miles • Insurance Included
               </div>
 
               <p className="mt-3 text-lg md:text-xl text-gray-200 max-w-xl">
@@ -207,7 +207,7 @@ export default function SurprisePage() {
           Start Earning with a Reliable Uber & Lyft Car in Surprise
         </h2>
         <p className="mt-3 text-lg">
-          Rideshare rentals from $300/week. Same-day approval and pickup,
+          Rideshare rentals from $400/week. Same-day approval and pickup,
           unlimited miles, and insurance included.
         </p>
         <a
@@ -240,7 +240,7 @@ export default function SurprisePage() {
             },
             {
               icon: "💳",
-              title: "First Week's Rent ($300)",
+              title: "First Week's Rent ($400)",
               desc: "Simple, upfront pricing. No hidden fees or surprise charges.",
             },
             {
@@ -436,7 +436,7 @@ export default function SurprisePage() {
               </details>
               <details className="bg-white dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3">
                 <summary className="font-medium cursor-pointer">
-                  What&apos;s included in the $300/week rate?
+                  What&apos;s included in the $400/week rate?
                 </summary>
                 <p className="mt-2">
                   The weekly rate typically includes insurance, basic
