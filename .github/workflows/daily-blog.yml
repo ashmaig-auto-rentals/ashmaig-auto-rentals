@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: 20
 
+      # Vercel is using pnpm (because pnpm-lock.yaml exists).
+      # Use pnpm here too so the workflow matches production installs.
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -30,34 +32,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate post
+      - name: Generate post + image
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           SITE_URL: "https://ashmaig.com"
         run: node scripts/generate-daily-post.mjs
-
-      - name: Debug generated files
-        run: |
-          echo "==== PWD ===="
-          pwd
-          echo "==== git status ===="
-          git status --porcelain
-          echo "==== tree src (top) ===="
-          ls -la src || true
-          echo "==== tree src/blog (top) ===="
-          ls -la src/blog || true
-          echo "==== tree public/blog (top) ===="
-          ls -la public/blog || true
-          echo "==== recent src/blog folders ===="
-          (ls -1t src/blog 2>/dev/null | head -n 20) || true
 
       - name: Commit & push
         run: |
           git config user.name "ashmaig-bot"
           git config user.email "bot@ashmaig.com"
 
-          # ✅ Commit the actual post location + images + topic queue updates
-          git add src/blog public/blog scripts/blog-topics.json
+          # ✅ Posts live in src/app/blog
+          git add src/app/blog public/blog scripts/blog-topics.json
 
           git commit -m "chore(blog): daily post" || echo "No changes to commit"
           git push

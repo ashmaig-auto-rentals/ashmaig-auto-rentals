@@ -1,9 +1,9 @@
 // scripts/generate-daily-post.mjs
-// Generates: src/blog/<slug>/page.tsx + meta.json + public/blog/<slug>/hero.png (if available)
+// Generates: src/app/blog/<slug>/page.tsx + meta.json + public/blog/<slug>/hero.png (if available)
 // Fallback hero: /public/blog/default-hero.png when image API fails (e.g., org not verified)
 //
 // Requires env: OPENAI_API_KEY, optional: SITE_URL
-// Note: OpenAI image sizes allowed: 1024x1024, 1024x1536, 1536x1024, auto
+// OpenAI image sizes allowed: 1024x1024, 1024x1536, 1536x1024, auto
 // We generate 1536x1024 and crop to 1200x630 using sharp.
 
 import fs from "node:fs";
@@ -22,8 +22,8 @@ if (!OPENAI_API_KEY) {
 
 const client = new OpenAI({ apiKey: OPENAI_API_KEY });
 
-// ✅ CHANGE THIS if your blog root differs
-const BLOG_ROOT = path.join(process.cwd(), "src", "blog"); // <— your existing posts live here
+// ✅ Your REAL blog root (per your message)
+const BLOG_ROOT = path.join(process.cwd(), "src", "app", "blog");
 
 function slugify(input) {
   return input
@@ -150,11 +150,16 @@ Rules:
   try {
     data = JSON.parse(text);
   } catch {
-    throw new Error("Model did not return valid JSON. First 600 chars:\n" + text.slice(0, 600));
+    throw new Error(
+      "Model did not return valid JSON. First 600 chars:\n" + text.slice(0, 600)
+    );
   }
 
   if (!data?.meta?.title || !data?.meta?.description) {
     throw new Error("Post plan missing meta fields:\n" + JSON.stringify(data, null, 2));
+  }
+  if (!Array.isArray(data?.article?.sections) || data.article.sections.length < 5) {
+    throw new Error("Post plan missing sections array or too few sections:\n" + JSON.stringify(data, null, 2));
   }
 
   return data;
@@ -167,7 +172,7 @@ async function writePostFiles({ slug, heroUrl, plan }) {
   const postDir = path.join(BLOG_ROOT, slug);
   fs.mkdirSync(postDir, { recursive: true });
 
-  // meta.json (in src/blog)
+  // meta.json (in src/app/blog/<slug>)
   writeJSON(path.join(postDir, "meta.json"), plan.meta);
 
   const h1 = plan.article.h1 || plan.meta.title;
@@ -213,7 +218,7 @@ async function writePostFiles({ slug, heroUrl, plan }) {
     })
     .join("\n");
 
-  const page = `// src/blog/${slug}/page.tsx
+  const page = `// src/app/blog/${slug}/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import BookingBar from "@/components/BookingBar";
@@ -228,7 +233,9 @@ export const metadata = {
     type: "article",
     url: "${canonical}",
     siteName: "Ashmaig Auto Rentals",
-    images: [{ url: "${ogImageAbs}", width: 1200, height: 630, alt: "${escapeJS(plan.meta.title)}" }]
+    images: [
+      { url: "${ogImageAbs}", width: 1200, height: 630, alt: "${escapeJS(plan.meta.title)}" }
+    ]
   },
   twitter: {
     card: "summary_large_image",
@@ -292,7 +299,9 @@ export default function BlogPage() {
           <h2 className="text-2xl font-semibold mt-10 mb-4">
             ${escapeHTML(plan.article.finalCtaHeading || "Need a delivery-ready car in Phoenix?")}
           </h2>
-          ${(plan.article.finalCtaParas || []).map((p) => `<p>${escapeHTML(p)}</p>`).join("\n")}
+          ${(plan.article.finalCtaParas || [])
+            .map((p) => `<p>${escapeHTML(p)}</p>`)
+            .join("\n")}
 
           <p>
             If you need a fuel-efficient, delivery-ready rental in Phoenix, check out{" "}
@@ -365,8 +374,8 @@ async function main() {
   writeJSON(queuePath, queue);
 
   console.log("Generated:");
-  console.log(`- src/blog/${slug}/meta.json`);
-  console.log(`- src/blog/${slug}/page.tsx`);
+  console.log(`- src/app/blog/${slug}/meta.json`);
+  console.log(`- src/app/blog/${slug}/page.tsx`);
   console.log(`- public/blog/${slug}/hero.png (if image generation succeeded)`);
   console.log(`- hero used: ${heroUrl}`);
 }
