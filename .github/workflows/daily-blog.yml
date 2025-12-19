@@ -1,0 +1,32 @@
+name: Daily Blog Post
+
+on:
+  schedule:
+    - cron: "0 15 * * *" # 8:00 AM Phoenix (UTC-7). Change if you want.
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm ci
+
+      - name: Generate post + image
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SITE_URL: "https://ashmaig.com"
+        run: node scripts/generate-daily-post.mjs
+
+      - name: Commit & push
+        run: |
+          git config user.name "ashmaig-bot"
+          git config user.email "bot@ashmaig.com"
+          git add app/blog public/blog scripts/blog-topics.json
+          git commit -m "chore(blog): daily post" || echo "No changes to commit"
+          git push
