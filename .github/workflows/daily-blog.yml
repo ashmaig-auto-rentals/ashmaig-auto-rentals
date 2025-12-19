@@ -2,20 +2,35 @@ name: Daily Blog Post
 
 on:
   schedule:
-    - cron: "0 15 * * *" # 8:00 AM Phoenix (UTC-7). Change if you want.
+    - cron: "0 15 * * *" # 8:00 AM Phoenix (UTC-7)
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - run: npm ci
+      # Vercel is using pnpm (because pnpm-lock.yaml exists).
+      # Use pnpm here too so the workflow matches production installs.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Generate post + image
         env:
@@ -27,6 +42,9 @@ jobs:
         run: |
           git config user.name "ashmaig-bot"
           git config user.email "bot@ashmaig.com"
-          git add app/blog public/blog scripts/blog-topics.json
+
+          # ✅ Your real blog source is src/blog (not app/blog)
+          git add src/blog public/blog scripts/blog-topics.json .github/workflows/daily-blog.yml
+
           git commit -m "chore(blog): daily post" || echo "No changes to commit"
           git push

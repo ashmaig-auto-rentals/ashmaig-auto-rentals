@@ -1,6 +1,10 @@
 // scripts/generate-daily-post.mjs
-// Generates: app/blog/<slug>/page.tsx + meta.json + public/blog/<slug>/hero.png (if available)
+// Generates: src/blog/<slug>/page.tsx + meta.json + public/blog/<slug>/hero.png (if available)
 // Fallback hero: /public/blog/default-hero.png when image API fails (e.g., org not verified)
+//
+// Requires env: OPENAI_API_KEY, optional: SITE_URL
+// Note: OpenAI image sizes allowed: 1024x1024, 1024x1536, 1536x1024, auto
+// We generate 1536x1024 and crop to 1200x630 using sharp.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -17,6 +21,9 @@ if (!OPENAI_API_KEY) {
 }
 
 const client = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+// ✅ CHANGE THIS if your blog root differs
+const BLOG_ROOT = path.join(process.cwd(), "src", "blog"); // <— your existing posts live here
 
 function slugify(input) {
   return input
@@ -37,7 +44,6 @@ function writeJSON(p, obj) {
 }
 
 function todayISO() {
-  // UTC date for CI consistency
   const d = new Date();
   return d.toISOString().slice(0, 10);
 }
@@ -62,7 +68,7 @@ function escapeJS(s = "") {
   return String(s).replaceAll("\\", "\\\\").replaceAll('"', '\\"');
 }
 
-// --- Image: generate 1536x1024 (supported) then crop/resize to 1200x630 ---
+// --- Image: generate 1536x1024 then crop/resize to 1200x630 ---
 async function generateHeroImage({ slug, title }) {
   const outDir = path.join(process.cwd(), "public", "blog", slug);
   fs.mkdirSync(outDir, { recursive: true });
@@ -77,7 +83,6 @@ Include: Phoenix skyline or desert landscape feel (generic), delivery vibe (subt
 Do NOT include any text, logos, brand names, watermarks, or recognizable trademarks.
 `;
 
-  // NOTE: supported sizes are: 1024x1024, 1024x1536, 1536x1024, auto
   const result = await client.images.generate({
     model: "gpt-image-1",
     prompt,
@@ -89,7 +94,6 @@ Do NOT include any text, logos, brand names, watermarks, or recognizable tradema
 
   const raw = Buffer.from(b64, "base64");
 
-  // OG-friendly 1200x630 crop
   await sharp(raw)
     .resize(1200, 630, { fit: "cover", position: "center" })
     .png({ quality: 90 })
@@ -130,7 +134,6 @@ Return VALID JSON ONLY with this exact shape:
 Rules:
 - 7 to 10 sections.
 - Include at least 1 section that mentions: Downtown Phoenix, Tempe/ASU, Scottsdale/Old Town, Glendale/Westgate, and Sky Harbor.
-- Add at least 1 section: "How to keep $/mile high in Phoenix" with practical tips.
 - Write natural, non-repetitive content.
 - No markdown fences in output. JSON only.
 `;
@@ -141,12 +144,7 @@ Rules:
   });
 
   const text = resp?.output_text;
-  if (!text) {
-    throw new Error(
-      "No output_text returned from Responses API.\n" +
-        JSON.stringify(resp, null, 2).slice(0, 1200)
-    );
-  }
+  if (!text) throw new Error("No output_text returned from Responses API.");
 
   let data;
   try {
@@ -156,22 +154,21 @@ Rules:
   }
 
   if (!data?.meta?.title || !data?.meta?.description) {
-    throw new Error("Post plan missing meta.title or meta.description:\n" + JSON.stringify(data, null, 2));
-  }
-  if (!Array.isArray(data?.article?.sections) || data.article.sections.length < 5) {
-    throw new Error("Post plan missing sections array or too few sections:\n" + JSON.stringify(data, null, 2));
+    throw new Error("Post plan missing meta fields:\n" + JSON.stringify(data, null, 2));
   }
 
   return data;
 }
 
-async function writeNextFiles({ slug, heroUrl, plan }) {
+async function writePostFiles({ slug, heroUrl, plan }) {
   const canonical = `${SITE_URL}/blog/${slug}`;
   const ogImageAbs = `${SITE_URL}${heroUrl}`;
 
-  // meta.json
-  const metaJsonPath = path.join(process.cwd(), "app", "blog", slug, "meta.json");
-  writeJSON(metaJsonPath, plan.meta);
+  const postDir = path.join(BLOG_ROOT, slug);
+  fs.mkdirSync(postDir, { recursive: true });
+
+  // meta.json (in src/blog)
+  writeJSON(path.join(postDir, "meta.json"), plan.meta);
 
   const h1 = plan.article.h1 || plan.meta.title;
 
@@ -216,9 +213,7 @@ async function writeNextFiles({ slug, heroUrl, plan }) {
     })
     .join("\n");
 
-  const pagePath = path.join(process.cwd(), "app", "blog", slug, "page.tsx");
-
-  const file = `// app/blog/${slug}/page.tsx
+  const page = `// src/blog/${slug}/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import BookingBar from "@/components/BookingBar";
@@ -233,9 +228,7 @@ export const metadata = {
     type: "article",
     url: "${canonical}",
     siteName: "Ashmaig Auto Rentals",
-    images: [
-      { url: "${ogImageAbs}", width: 1200, height: 630, alt: "${escapeJS(plan.meta.title)}" }
-    ]
+    images: [{ url: "${ogImageAbs}", width: 1200, height: 630, alt: "${escapeJS(plan.meta.title)}" }]
   },
   twitter: {
     card: "summary_large_image",
@@ -337,8 +330,7 @@ export default function BlogPage() {
 }
 `;
 
-  fs.mkdirSync(path.dirname(pagePath), { recursive: true });
-  fs.writeFileSync(pagePath, file, "utf8");
+  fs.writeFileSync(path.join(postDir, "page.tsx"), page, "utf8");
 }
 
 async function main() {
@@ -359,7 +351,7 @@ async function main() {
   console.log("Topic:", topic);
   console.log("Slug:", slug);
 
-  // ✅ Fallback image logic (so the job never fails due to image permissions)
+  // ✅ Fallback hero logic so workflow never fails on image permissions
   let heroUrl = "/blog/default-hero.png";
   try {
     heroUrl = await generateHeroImage({ slug, title: topic });
@@ -368,16 +360,15 @@ async function main() {
   }
 
   const plan = await generatePostPlan({ topic, date });
-  await writeNextFiles({ slug, heroUrl, plan });
+  await writePostFiles({ slug, heroUrl, plan });
 
-  // mark as used
   writeJSON(queuePath, queue);
 
   console.log("Generated:");
-  console.log(`- app/blog/${slug}/meta.json`);
-  console.log(`- app/blog/${slug}/page.tsx`);
+  console.log(`- src/blog/${slug}/meta.json`);
+  console.log(`- src/blog/${slug}/page.tsx`);
   console.log(`- public/blog/${slug}/hero.png (if image generation succeeded)`);
-  console.log(`- fallback used: ${heroUrl === "/blog/default-hero.png" ? "YES" : "NO"}`);
+  console.log(`- hero used: ${heroUrl}`);
 }
 
 main().catch((err) => {
