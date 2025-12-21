@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import BookingBar from "@/components/BookingBar";
-import MetaPageView from "@/components/MetaPageView"; // ⬅️ added
+import MetaPageView from "@/components/MetaPageView";
 
 export default function HomePage() {
   return (
@@ -42,7 +42,12 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
 
-        <div className="relative z-10 section flex items-center py-16">
+        {/*
+          ✅ IMPORTANT FIX:
+          We DO NOT use your global `.section` class here because it's likely what's
+          causing the slight right offset on mobile.
+        */}
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex items-center py-16">
           <div className="w-full grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-center">
             {/* LEFT: HERO TEXT */}
             <div className="text-white max-w-3xl">
@@ -84,12 +89,15 @@ export default function HomePage() {
             </div>
 
             {/* RIGHT: BOOKING CARD */}
-            <div className="w-full flex justify-center lg:justify-end">
-              <div className="w-full max-w-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/60 dark:border-slate-700 p-4 sm:p-5">
-                <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100 text-center sm:text-left">
-                  Apply to Get a Car
-                </h2>
-                <BookingBar />
+            <div className="w-full">
+              {/* ✅ Center on mobile via mx-auto, right align on desktop via lg:ml-auto */}
+              <div className="w-full max-w-md mx-auto lg:ml-auto lg:mr-0">
+                <div className="w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/60 dark:border-slate-700 p-4 sm:p-5">
+                  <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100 text-center sm:text-left">
+                    Apply to Get a Car
+                  </h2>
+                  <BookingBar />
+                </div>
               </div>
             </div>
           </div>
@@ -221,6 +229,16 @@ export default function HomePage() {
                 <h3 className="text-lg font-semibold text-center">{name}</h3>
               </div>
             ))}
+          </div>
+
+          {/* Optional link back to blog if you want */}
+          <div className="mt-10 text-center">
+            <Link
+              href="/blog"
+              className="inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
+              Read Driver Tips on Our Blog
+            </Link>
           </div>
         </div>
       </section>
